@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<deployment xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="urn:jboss:bean-deployer:2.0 bean-deployer_2_0.xsd"
+	xmlns="urn:jboss:bean-deployer:2.0">
+
+    <!-- System clock -->
+    <bean name="SystemClock" class="ua.mobius.media.server.scheduler.DefaultClock"/>
+
+    <!-- EDF scheduler -->
+    <bean name="Scheduler" class="ua.mobius.media.server.scheduler.Scheduler">
+        <property name="clock"><inject bean="SystemClock"/></property>        
+    </bean>    
+    
+    <!-- Network interfaces definition -->
+    <bean name="localhost" class="ua.mobius.media.server.io.network.UdpManager">
+        <constructor>
+            <parameter><inject bean="Scheduler"/></parameter>
+        </constructor>
+        <property name="bindAddress">127.0.0.1</property>
+        <property name="localBindAddress">127.0.0.1</property>
+		<property name="localNetwork">127.0.0.1</property>
+		<property name="localSubnet">255.255.255.255</property>
+		<property name="useSbc">false</property>
+		<property name="rtpTimeout">0</property>
+    </bean>
+
+    <!-- SS7 interface definition -->
+    <!--<bean name="SS7" class="ua.mobius.media.server.io.ss7.SS7Manager">
+        <constructor>
+            <parameter><inject bean="Scheduler"/></parameter>
+        </constructor>
+    </bean>-->
+
+    <!-- Channels manager definition -->
+    <bean name="channelsManager" class="ua.mobius.media.server.impl.rtp.ChannelsManager">
+        <constructor>
+            <parameter><inject bean="localhost"/></parameter>
+        </constructor>
+        <property name="scheduler"><inject bean="Scheduler" /></property>
+        <property name="jitterBufferSize">50</property>
+        <!--<property name="SS7Manager"><inject bean="SS7" /></property>-->
+    </bean>
+
+    <!-- Signal processor factory -->
+    <bean name="DSP" class="ua.mobius.media.server.component.DspFactoryImpl">
+        <property name="audioCodecs">
+            <list value-type="java.lang.String">
+                <value>ua.mobius.media.server.impl.dsp.audio.l16.Codec</value>
+                <value>ua.mobius.media.server.impl.dsp.audio.g711.alaw.Codec</value>
+                <value>ua.mobius.media.server.impl.dsp.audio.g711.ulaw.Codec</value>
+            </list>
+        </property>
+    </bean>
+
+    <!-- Resources pool definition -->
+    <bean name="resourcesPool" class="ua.mobius.media.core.ResourcesPool">
+        <constructor>
+           	<parameter><inject bean="Scheduler"/></parameter>
+	   		<parameter><inject bean="channelsManager"/></parameter>
+ 		   	<parameter><inject bean="DSP"/></parameter>
+        </constructor>
+        <property name="defaultPlayers">5</property>
+		<property name="defaultRecorders">5</property>
+		<property name="defaultDtmfDetectors">5</property>
+        <property name="defaultDtmfGenerators">0</property>
+		<property name="defaultSignalDetectors">0</property>
+        <property name="defaultSignalGenerators">0</property>
+        <property name="defaultLocalConnections">10</property>
+        <property name="defaultRemoteConnections">10</property>
+		<property name="dtmfDetectorDbi">-35</property>
+		<property name="oobToneDuration">160</property>
+		<property name="oobEndTonePackets">3</property>
+		<property name="growEndDuration">false</property>		
+    </bean>
+    
+    <!-- MGCP Controller definition -->
+    <bean name="MGCP" class ="ua.mobius.media.server.mgcp.controller.Controller">
+        <property name="udpInterface"><inject bean="localhost"/></property>
+        <property name="port">2427</property>
+        <property name="scheduler"><inject bean="Scheduler"/></property>
+        <property name="server"><inject bean="MediaServer"/></property>
+        <property name="configuration">mgcp-conf.xml</property>
+	<property name="poolSize">25</property>
+    </bean>    
+    
+    <!-- Media Server -->
+    <bean name="MediaServer" class="ua.mobius.media.core.Server">
+        <property name="clock"><inject bean="SystemClock"/></property>
+        <property name="scheduler"><inject bean="Scheduler"/></property>
+        <property name="udpManager"><inject bean="localhost"/></property>
+	<property name="resourcesPool"><inject bean="resourcesPool"/></property>
+        <property name="heartBeatTime">0</property>
+        <incallback method="addInstaller"/>
+        <uncallback method="removeInstaller"/>
+    </bean>
+    
+    <!-- Endpoints -->
+    <bean name="Announcement" class="ua.mobius.media.core.endpoints.VirtualEndpointInstaller">
+        <property name="namePattern">mobius/aap/</property>
+        <property name="endpointClass">ua.mobius.media.core.endpoints.impl.AnnouncementEndpoint</property>
+        <property name="initialSize">1</property>
+    </bean>
+
+    <bean name="IVR" class="ua.mobius.media.core.endpoints.VirtualEndpointInstaller">
+        <property name="namePattern">mobius/ivr/</property>
+        <property name="endpointClass">ua.mobius.media.core.endpoints.impl.IvrEndpoint</property>
+        <property name="initialSize">5</property>
+    </bean>
+
+    <bean name="CNF" class="ua.mobius.media.core.endpoints.VirtualEndpointInstaller">
+        <property name="namePattern">mobius/cnf/</property>
+        <property name="endpointClass">ua.mobius.media.core.endpoints.impl.ConferenceEndpoint</property>
+        <property name="initialSize">5</property>
+    </bean>
+
+    <bean name="Bridge" class="ua.mobius.media.core.endpoints.VirtualEndpointInstaller">
+        <property name="namePattern">mobius/bridge/</property>
+        <property name="endpointClass">ua.mobius.media.core.endpoints.impl.BridgeEndpoint</property>
+        <property name="initialSize">5</property>
+    </bean>
+
+    <bean name="Relay" class="ua.mobius.media.core.endpoints.VirtualEndpointInstaller">
+        <property name="namePattern">mobius/relay/</property>
+        <property name="endpointClass">ua.mobius.media.core.endpoints.impl.PacketRelayEndpoint</property>
+        <property name="initialSize">1</property>
+    </bean>
+
+	<!-- DS0 Endpoints configuration sample -->
+	<!--<bean name="DS0" class="ua.mobius.media.core.endpoints.VirtualSS7EndpointInstaller">
+        <property name="namePattern">mobius/ds0/</property>
+        <property name="channelsManager"><inject bean="channelsManager"/></property>
+        <property name="endpointClass">ua.mobius.media.core.endpoints.impl.Ds0Endpoint</property>
+        <property name="startChannelID">125</property>
+        <property name="initialSize">15</property>
+        <property name="isALaw">true</property>
+    </bean>-->
+	
+</deployment>
