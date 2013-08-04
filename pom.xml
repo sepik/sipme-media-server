@@ -13,13 +13,13 @@
     <version>4.0.0-SNAPSHOT</version>
 
     <name>Sipme Media Server</name>
-    <url>http://code.google.com/p/mediaserver/</url>
+    <url>http://code.google.com/p/sipme-media-server/</url>
     <organization>
-        <name>TeleStax, Inc.</name>
- 	<url>http://www.telestax.com</url>
+        <name>Mobius, Inc.</name>
+ 	<url>http://www.mobius.ua</url>
     </organization>
     <issueManagement>
-	<url>http://code.google.com/p/mediaserver/issues/list</url>
+	<url>http://code.google.com/p/sipme-media-server/issues/list</url>
     </issueManagement>
 
     <properties>
@@ -155,9 +155,9 @@
     </profiles>
 
     <scm>
-        <connection>scm:git:https://code.google.com/p/mediaserver/</connection>
-	<developerConnection>scm:git:https://code.google.com/p/mediaserver/</developerConnection>
-	<url>https://code.google.com/p/mediaserver/</url>
+        <connection>scm:git:https://code.google.com/p/sipme-media-server/</connection>
+	<developerConnection>scm:git:https://code.google.com/p/sipme-media-server/</developerConnection>
+	<url>https://code.google.com/p/sipme-media-server/</url>
     </scm>
 
 	<!--  -->
@@ -188,10 +188,23 @@
 		without user configuration
 	-->
 
+    <distributionManagement>
+ 	<repository>
+     		<id>mobius-releases-repository</id>
+      		<name>Mobius Releases Repository</name>
+       		<url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url>
+   	</repository>
+  	<snapshotRepository>
+          	<id>mobius-snapshots-repository</id>
+          	<name>Mobius Snapshots Repository</name>
+      		<url>https://oss.sonatype.org/content/repositories/snapshots</url>
+    	</snapshotRepository>
+    </distributionManagement>
+
     <repositories>
         	<repository>
 			  <id>mobius-public-repository-group</id>
-			  <name>Mobicens Public Maven Repository Group</name>
+			  <name>Mobius Public Maven Repository Group</name>
 			  <url>https://oss.sonatype.org/content/groups/public</url>
 			  <layout>default</layout>
 			  <releases>
@@ -217,11 +230,11 @@
 				<updatePolicy>never</updatePolicy>
 			</snapshots>
 		</repository>
-        <repository>
-        	<id>jboss-deprecated</id>
-        	<name>jboss-deprecated</name>
-        	<url>http://repository.jboss.org/nexus/content/repositories/deprecated</url>
-        </repository>
+	        <repository>
+        		<id>jboss-deprecated</id>
+	        	<name>jboss-deprecated</name>
+	        	<url>http://repository.jboss.org/nexus/content/repositories/deprecated</url>
+	        </repository>
     </repositories>
 
     <pluginRepositories>
