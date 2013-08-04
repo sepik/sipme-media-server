@@ -4,12 +4,12 @@
     <parent>
         <groupId>ua.mobius.media.client</groupId>
         <artifactId>mgcp</artifactId>
-        <version>4.0.0-SNAPSHOT</version>
+        <version>4.0.0</version>
     </parent>
 
         <groupId>ua.mobius.media.client</groupId>
         <artifactId>mgcp-driver</artifactId>
-        <version>4.0.0-SNAPSHOT</version>
+        <version>4.0.0</version>
         <name>Mobius MGCP Driver</name>
 
 	<developers>

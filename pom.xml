@@ -10,7 +10,7 @@
 
     <groupId>ua.mobius.media</groupId>
     <artifactId>server</artifactId>
-    <version>4.0.0-SNAPSHOT</version>
+    <version>4.0.0</version>
 
     <name>Sipme Media Server</name>
     <url>http://code.google.com/p/sipme-media-server/</url>

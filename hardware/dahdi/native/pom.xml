@@ -4,7 +4,7 @@
 	<parent>
                 <groupId>ua.mobius.media.hardware</groupId>
                 <artifactId>mobius-dahdi-parent</artifactId>
-                <version>4.0.0-SNAPSHOT</version>
+                <version>4.0.0</version>
         </parent>
 
 	<artifactId>mobius-dahdi-native</artifactId>
