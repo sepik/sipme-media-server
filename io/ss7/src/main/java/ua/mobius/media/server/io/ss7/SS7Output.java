@@ -266,7 +266,8 @@ public class SS7Output extends AbstractCompoundSink {
         latestSeq=buffer.getSequenceNumber();
         currTone=data[0];
         
-    	for(int i=0;i<5;i++)
+        int counter=0;
+		for(int i=0;i<5;i++)
     	{
     		ShortFrame currFrame=ShortMemory.allocate(packetSize/2);
     		currFrame.setHeader(null);
@@ -278,9 +279,10 @@ public class SS7Output extends AbstractCompoundSink {
     		currFrame.setLength(packetSize);
     		
     		byte[] toneData=DtmfTonesData.buffer[data[0]];
+    		
     		short[] shortData=currFrame.getData();
-    		for(int j=0;j<shortData.length;j++)
-    			shortData[j] = ((short) ((toneData[j*2] << 8) | (toneData[j*2 + 1] & 0xFF)));
+    		for(int j=0;j<shortData.length;j++,counter+=2)
+    			shortData[j] = ((short) ((toneData[counter+1] << 8) | (toneData[counter] & 0xFF)));
     		
     		ByteFrame destinationFrame=null;
     		if (dsp != null && destinationFormat!=null) {

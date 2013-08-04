@@ -201,7 +201,7 @@ public class RtpConnectionImpl extends BaseConnection implements RTPChannelListe
         }
         
         if (!audio.isEmpty()) {
-        	rtpAudioChannel.setFormatMap(audioFormats);            
+        	rtpAudioChannel.setFormatMap(audio);            
         }
 
         String address = null;
@@ -248,7 +248,7 @@ public class RtpConnectionImpl extends BaseConnection implements RTPChannelListe
         }
         
         if (!audio.isEmpty()) {
-        	rtpAudioChannel.setFormatMap(audioFormats);            
+        	rtpAudioChannel.setFormatMap(audio);            
         }
 
         String address = null;

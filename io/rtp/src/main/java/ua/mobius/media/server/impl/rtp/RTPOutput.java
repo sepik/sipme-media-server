@@ -39,11 +39,13 @@ import ua.mobius.media.server.component.audio.AudioOutput;
 import ua.mobius.media.server.component.oob.OOBOutput;
 import ua.mobius.media.MediaSink;
 import ua.mobius.media.MediaSource;
+import ua.mobius.media.server.concurrent.ConcurrentCyclicFIFO;
 import ua.mobius.media.server.impl.AbstractCompoundSink;
 import ua.mobius.media.server.impl.rtp.sdp.RTPFormat;
 import ua.mobius.media.server.io.network.ProtocolHandler;
 import ua.mobius.media.server.scheduler.Scheduler;
 import ua.mobius.media.server.scheduler.Task;
+import ua.mobius.media.server.spi.dtmf.DtmfTonesData;
 import ua.mobius.media.server.spi.FormatNotSupportedException;
 import ua.mobius.media.server.spi.ConnectionMode;
 import ua.mobius.media.server.spi.format.AudioFormat;
@@ -51,6 +53,7 @@ import ua.mobius.media.server.spi.format.FormatFactory;
 import ua.mobius.media.server.spi.format.Formats;
 import ua.mobius.media.server.spi.memory.ByteFrame;
 import ua.mobius.media.server.spi.memory.ShortFrame;
+import ua.mobius.media.server.spi.memory.ShortMemory;
 import ua.mobius.media.server.spi.dsp.AudioCodec;
 import ua.mobius.media.server.spi.dsp.AudioProcessor;
 import org.apache.log4j.Logger;
@@ -64,7 +67,9 @@ import org.apache.log4j.Logger;
  */
 public class RTPOutput extends AbstractCompoundSink {
 	private AudioFormat format = FormatFactory.createAudioFormat("LINEAR", 8000, 16, 1);	
-	
+	private long period = 20000000L;
+    private int packetSize = (int)(period / 1000000) * format.getSampleRate()/1000 * format.getSampleSize() / 16;
+    
     private RTPDataChannel channel;
     
     //signaling processor
@@ -75,6 +80,15 @@ public class RTPOutput extends AbstractCompoundSink {
     private AudioOutput output;
     private OOBOutput oobOutput;
     
+    private byte[] data;
+    private byte[] cacheData;
+	private short[] shortData;
+	private short[] toneData,audioData;
+    private int eventDuration;
+    private int count=0;
+    
+    private ConcurrentCyclicFIFO<ShortFrame> oobFrames=new ConcurrentCyclicFIFO<ShortFrame>();
+    private ShortFrame currFrame=null,outputFrame=null;
     /**
      * Creates new transmitter
      */
@@ -132,17 +146,18 @@ public class RTPOutput extends AbstractCompoundSink {
 
     @Override
     public void onMediaTransfer(ShortFrame frame) throws IOException {
-    	/*System.out.print("INPUT:");
-    	for(int i=0;i<5;i++)
-    		System.out.print(frame.getData()[i] + ",");
-		
-		System.out.println("");*/
+    	outputFrame=oobFrames.poll();
+    	if(outputFrame==null)
+    		outputFrame=frame;
+    	else
+    		frame.recycle();
+    	
     	//do transcoding
-    	ByteFrame outputFrame=null;
+    	ByteFrame byteFrame=null;
     	if (dsp != null) {
     		try
     		{
-    			outputFrame = dsp.encode(frame);            			
+    			byteFrame = dsp.encode(outputFrame);            			
     		}
     		catch(Exception e)
     		{
@@ -152,19 +167,37 @@ public class RTPOutput extends AbstractCompoundSink {
     		} 
     	}
     	
-    	if(outputFrame==null)
+    	if(byteFrame==null)
     		return;
     	
-    	/*for(int i=0;i<5;i++)
-    		System.out.print(outputFrame.getData()[i] + ",");
-		
-		System.out.println("");*/
-		
-    	channel.send(outputFrame);
+    	channel.send(byteFrame);
     }   
     
     @Override
     public void onMediaTransfer(ByteFrame frame) throws IOException {
-    	channel.sendDtmf(frame);
+    	if(channel.couldSendDtmf())
+    		channel.sendDtmf(frame);
+    	else
+    	{
+    		//get duration , if duration is lower then 1600 create packet
+    		data=frame.getData();
+    		eventDuration=(data[2]<<8) | (data[3] & 0xFF);    	
+        	if(eventDuration<800)
+        	{
+        		currFrame=ShortMemory.allocate(packetSize);
+        		cacheData=DtmfTonesData.buffer[data[0]];
+        		shortData=currFrame.getData();
+        		count=eventDuration;
+        		for(int j=0;j<shortData.length;j++,count+=2)
+        			shortData[j] = ((short) ((cacheData[count+1] << 8) | (cacheData[count] & 0xFF)));
+        		
+        		//may be in pool only due to order change , should not be otherwise
+        		if(oobFrames.size()>5)
+        			oobFrames.poll().recycle();
+        		
+        		oobFrames.offer(currFrame);
+        	}
+    	}
+    		
     } 
 }

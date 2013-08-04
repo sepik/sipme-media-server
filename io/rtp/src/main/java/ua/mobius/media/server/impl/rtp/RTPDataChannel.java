@@ -403,6 +403,11 @@ public class RTPDataChannel {
     		tx.perform(frame);
     }
     
+    public Boolean couldSendDtmf()
+    {
+    	return sendDtmf;
+    }
+    
     public void sendDtmf(ByteFrame frame)
     {    	
     	if(dataChannel.isConnected())
