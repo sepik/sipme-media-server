@@ -59,6 +59,20 @@
         <module>bootstrap</module>        
     </modules>
 
+    <developers>
+                <developer>
+                        <id>oifa.yulian</id>
+                        <name>Yulian Oifa</name>
+                        <email>oifa.yulian@gmail.com</email>
+                        <organization>Mobius Software</organization>
+                        <organizationUrl>http://www.mobius.ua/</organizationUrl>
+                        <roles>
+                                <role>RestComm Project Lead</role>
+                        </roles>
+                        <timezone>0</timezone>
+                </developer>
+    </developers>
+
     <dependencies>
         <dependency>
             <groupId>log4j</groupId>
@@ -127,7 +141,35 @@
                             <preparationGoals>clean install</preparationGoals>
 			    <arguments>-Dmaven.test.skip</arguments>
                         </configuration>
-                    </plugin>			
+                    </plugin>	
+	 <plugin>
+                                <groupId>org.apache.maven.plugins</groupId>
+                                <artifactId>maven-source-plugin</artifactId>
+                                <version>2.1.2</version>
+                                <executions>
+                                        <execution>
+                                                <id>attach-sources</id>
+                                                <phase>verify</phase>
+                                                <goals>
+                                                        <goal>jar</goal>
+                                                </goals>
+                                        </execution>
+                                </executions>
+                        </plugin>
+                        <plugin>
+                                <groupId>org.apache.maven.plugins</groupId>
+                                <artifactId>maven-javadoc-plugin</artifactId>
+                                <version>2.8.1</version>
+                                <executions>
+                                        <execution>
+                                            <id>attach-javadocs</id>
+                                            <phase>verify</phase>
+                                            <goals>
+                                                <goal>jar</goal>
+                                            </goals>
+                                        </execution>
+                                    </executions>
+                        </plugin>		
                 </plugins>
             </build>
         </profile>
