@@ -11,8 +11,8 @@
     <groupId>ua.mobius.media</groupId>
     <artifactId>server</artifactId>
     <version>4.0.0</version>
-
     <name>Sipme Media Server</name>
+    <description>IP/SS7 Media Server</description>
     <url>http://code.google.com/p/sipme-media-server/</url>
     <organization>
         <name>Mobius, Inc.</name>
@@ -36,6 +36,13 @@
 	<version.jboss.microcontainer>2.2.0.M2</version.jboss.microcontainer>
 	<jain-mgcp.version>1.0</jain-mgcp.version>
     </properties>
+    <licenses>
+                <license>
+                        <name>GNU LESSER GENERAL PUBLIC LICENSE</name>
+                        <url>http://www.gnu.org/licenses/lgpl-2.1.html</url>
+                        <distribution>repo</distribution>
+                </license>
+	</licenses>
 
     <modules>
 	<module>hardware</module>
@@ -120,35 +127,7 @@
                             <preparationGoals>clean install</preparationGoals>
 			    <arguments>-Dmaven.test.skip</arguments>
                         </configuration>
-                    </plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-source-plugin</artifactId>
-				<version>2.1.2</version>
-				<executions>
-					<execution>
-						<id>attach-sources</id>
-						<phase>verify</phase>
-						<goals>
-							<goal>jar</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-javadoc-plugin</artifactId>
-				<version>2.8.1</version>
-				<executions>
-				        <execution>
-				            <id>attach-javadocs</id>
-				            <phase>verify</phase>
-				            <goals>
-				                <goal>jar</goal>
-				            </goals>
-				        </execution>
-				    </executions>
-			</plugin>
+                    </plugin>			
                 </plugins>
             </build>
         </profile>
