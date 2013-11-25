@@ -234,7 +234,7 @@ public class UdpManager {
      * @retun min port number
      */
     public int getHighestPort() {
-        return portManager.getLowestPort();
+        return portManager.getHighestPort();
     }
 
     public boolean connectImmediately(InetSocketAddress address)
