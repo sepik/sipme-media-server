@@ -658,12 +658,6 @@ public class RTPDataChannel {
         		return;
         	}
         	
-        	//ignore frames with duplicate timestamp
-            if (frame.getTimestamp()/1000000L == dtmfTimestamp) {
-            	frame.recycle();
-            	return;
-            }
-            
         	//convert to milliseconds first
         	dtmfTimestamp = frame.getTimestamp() / 1000000L;
 

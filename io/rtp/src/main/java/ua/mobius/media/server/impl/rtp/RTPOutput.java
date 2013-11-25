@@ -34,6 +34,7 @@ import java.net.InetSocketAddress;
 import java.net.SocketException;
 import java.nio.channels.DatagramChannel;
 import java.nio.channels.SelectionKey;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.text.Format;
 import ua.mobius.media.server.component.audio.AudioOutput;
 import ua.mobius.media.server.component.oob.OOBOutput;
@@ -85,10 +86,15 @@ public class RTPOutput extends AbstractCompoundSink {
 	private short[] shortData;
 	private short[] toneData,audioData;
     private int eventDuration;
+    private int lastEventDuration=-1;
+    private int tone;
+    private int lastTone=-1;
     private int count=0;
+    private long lastTimestamp=0;
     
-    private ConcurrentCyclicFIFO<ShortFrame> oobFrames=new ConcurrentCyclicFIFO<ShortFrame>();
-    private ShortFrame currFrame=null,outputFrame=null;
+    private ShortFrame currFrame=null;
+    private ByteFrame audioFrame,oobFrame;
+    private AtomicInteger dtmfSent=new AtomicInteger(0);
     /**
      * Creates new transmitter
      */
@@ -146,18 +152,20 @@ public class RTPOutput extends AbstractCompoundSink {
 
     @Override
     public void onMediaTransfer(ShortFrame frame) throws IOException {
-    	outputFrame=oobFrames.poll();
-    	if(outputFrame==null)
-    		outputFrame=frame;
-    	else
-    		frame.recycle();
     	
+    	if(dtmfSent.decrementAndGet()>0)
+    	{
+    		frame.recycle();
+    		return;
+    	}
+    	
+    	dtmfSent.compareAndSet(-1,0);
     	//do transcoding
-    	ByteFrame byteFrame=null;
+    	audioFrame=null;
     	if (dsp != null) {
     		try
     		{
-    			byteFrame = dsp.encode(outputFrame);            			
+    			audioFrame = dsp.encode(frame);            			
     		}
     		catch(Exception e)
     		{
@@ -167,37 +175,68 @@ public class RTPOutput extends AbstractCompoundSink {
     		} 
     	}
     	
-    	if(byteFrame==null)
+    	if(audioFrame==null)
     		return;
     	
-    	channel.send(byteFrame);
-    }   
+    	channel.send(audioFrame);
+    }
     
     @Override
-    public void onMediaTransfer(ByteFrame frame) throws IOException {
+    public void onMediaTransfer(ByteFrame frame) throws IOException {    	
     	if(channel.couldSendDtmf())
     		channel.sendDtmf(frame);
     	else
     	{
+    		dtmfSent.set(2);
+    		
     		//get duration , if duration is lower then 1600 create packet
     		data=frame.getData();
-    		eventDuration=(data[2]<<8) | (data[3] & 0xFF);    	
-        	if(eventDuration<800)
+    		eventDuration=(data[2]<<8) | (data[3] & 0xFF);
+    		tone=data[0];
+    		//remove end tone duplicates when translating to inband
+        	if(eventDuration<800 && (lastTone!=tone || lastEventDuration!=eventDuration))
         	{
+        		lastTone=tone;
+        		if(eventDuration==0)
+        			lastTimestamp=frame.getTimestamp();
+        		
+        		lastEventDuration=eventDuration;
         		currFrame=ShortMemory.allocate(packetSize);
-        		cacheData=DtmfTonesData.buffer[data[0]];
+        		currFrame.setOffset(0);
+        		currFrame.setLength(currFrame.getLength());
+        		currFrame.setTimestamp(lastTimestamp);
+        		currFrame.setDuration(frame.getDuration());
+        		currFrame.setSequenceNumber(frame.getSequenceNumber());
+        		currFrame.setEOM(frame.isEOM());
+        		currFrame.setFormat(format);
+                
+        		cacheData=DtmfTonesData.buffer[tone];
         		shortData=currFrame.getData();
-        		count=eventDuration;
+        		//length in bytes
+        		count=eventDuration*2;
         		for(int j=0;j<shortData.length;j++,count+=2)
         			shortData[j] = ((short) ((cacheData[count+1] << 8) | (cacheData[count] & 0xFF)));
         		
         		//may be in pool only due to order change , should not be otherwise
-        		if(oobFrames.size()>5)
-        			oobFrames.poll().recycle();
-        		
-        		oobFrames.offer(currFrame);
+        		ByteFrame oobFrame=null;
+            	if (dsp != null) {
+            		try
+            		{
+            			oobFrame = dsp.encode(currFrame);            			
+            		}
+            		catch(Exception e)
+            		{
+            			//transcoding error , print error and try to move to next frame
+            			logger.error(e);
+            			return;
+            		} 
+            	}
+            	
+            	if(oobFrame==null)
+            		return;
+            	
+            	channel.send(oobFrame);
         	}
     	}
-    		
-    } 
+    }
 }

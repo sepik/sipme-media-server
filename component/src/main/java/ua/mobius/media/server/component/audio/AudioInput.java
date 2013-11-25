@@ -131,22 +131,7 @@ public class AudioInput extends AbstractAudioSink {
      */
     public ShortFrame poll() {
         return buffer.poll();
-    }
-
-    /**
-     * Recycles input stream
-     */
-    public void recycle() {
-    	while(buffer.size()>0)
-    		buffer.poll().recycle();
-    	
-    	if(activeFrame!=null)
-    		activeFrame.recycle();
-    	
-        activeFrame=null;
-		activeData=null;
-		byteIndex=0;		        
-    }
+    }    
     
     public void resetBuffer()
     {

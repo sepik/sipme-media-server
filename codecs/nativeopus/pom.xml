@@ -1,0 +1,27 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>ua.mobius.media.codecs</groupId>
+		<artifactId>codecs</artifactId>
+		<version>4.0.1-SNAPSHOT</version>
+	</parent>
+
+	<artifactId>native-opus</artifactId>
+	<name>Native Opus Container</name>
+	<packaging>pom</packaging>
+	
+	<dependencies>
+        <dependency>
+            <groupId>ua.mobius.media</groupId>
+            <artifactId>spi</artifactId>
+            <version>${project.version}</version>
+	  </dependency>
+	</dependencies>
+
+	<modules>
+		<module>java</module>
+		<module>native</module>
+	</modules>
+
+</project>

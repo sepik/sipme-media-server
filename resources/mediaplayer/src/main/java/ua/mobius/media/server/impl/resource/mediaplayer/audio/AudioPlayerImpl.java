@@ -43,6 +43,7 @@ import ua.mobius.media.server.impl.resource.mediaplayer.audio.tts.VoicesCache;
 import ua.mobius.media.server.impl.resource.mediaplayer.audio.wav.WavTrackImpl;
 import ua.mobius.media.server.impl.resource.mediaplayer.audio.tone.ToneTrackImpl;
 import ua.mobius.media.server.scheduler.Scheduler;
+import ua.mobius.media.server.scheduler.Task;
 import ua.mobius.media.server.spi.dsp.AudioProcessor;
 import ua.mobius.media.server.spi.ResourceUnavailableException;
 import ua.mobius.media.server.spi.format.AudioFormat;
@@ -83,6 +84,14 @@ public class AudioPlayerImpl extends AbstractAudioSource implements Player, TTSE
     
     private AudioInput input;
     
+    private Scheduler scheduler;
+    
+    //event sender task
+    private EventSender eventSender;
+    
+    private AudioPlayerEvent playerStartedEvent;
+    private AudioPlayerEvent playerStoppedEvent;
+    
     private VoicesCache voiceCache;
     /**
      * Creates new instance of the Audio player.
@@ -95,7 +104,13 @@ public class AudioPlayerImpl extends AbstractAudioSource implements Player, TTSE
         super(name, scheduler,scheduler.INPUT_QUEUE);
         
         this.input=new AudioInput(ComponentType.PLAYER.getType(),packetSize);
-        this.connect(this.input);        
+        this.connect(this.input);
+        
+        this.scheduler=scheduler;
+        
+        eventSender = new EventSender(); 
+        playerStartedEvent=new AudioPlayerEvent(this, AudioPlayerEvent.START);
+        playerStoppedEvent=new AudioPlayerEvent(this, AudioPlayerEvent.STOP);
     }
 
     public AudioInput getAudioInput()
@@ -199,7 +214,7 @@ public class AudioPlayerImpl extends AbstractAudioSource implements Player, TTSE
         }
         start();
         
-        listeners.dispatch(new AudioPlayerEvent(this, AudioPlayerEvent.START));
+        fireEvent(playerStartedEvent);        
     }
 
     @Override
@@ -213,7 +228,7 @@ public class AudioPlayerImpl extends AbstractAudioSource implements Player, TTSE
 
     @Override
     protected void stopped() {
-    	listeners.dispatch(new AudioPlayerEvent(this, AudioPlayerEvent.STOP));
+    	fireEvent(playerStoppedEvent);     	
     }
     /**
      * Sends notification that signal is completed.
@@ -222,7 +237,7 @@ public class AudioPlayerImpl extends AbstractAudioSource implements Player, TTSE
     @Override
     protected void completed() {
         super.completed();
-        listeners.dispatch(new AudioPlayerEvent(this, AudioPlayerEvent.STOP));
+        fireEvent(playerStoppedEvent);         
     }
     
     @Override
@@ -312,5 +327,29 @@ public class AudioPlayerImpl extends AbstractAudioSource implements Player, TTSE
     private VoicesCache getVoicesCache() {
     	if (voiceCache != null) return voiceCache;    	
     	return voiceCache = new VoicesCache();
+    }
+    
+    private void fireEvent(AudioPlayerEvent event) {
+        eventSender.event = event;
+        scheduler.submit(eventSender,scheduler.MIXER_MIX_QUEUE);
+    }
+    
+    private class EventSender extends Task {
+
+        protected AudioPlayerEvent event;
+        
+        public EventSender() {
+            super();
+        }        
+
+        @Override
+        public long perform() {
+        	listeners.dispatch(event);        	
+            return 0;
+        }
+    
+        public int getQueueNumber() {
+            return scheduler.MIXER_MIX_QUEUE;
+        }
     }
 }

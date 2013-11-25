@@ -264,8 +264,8 @@ public class JitterBuffer implements Serializable {
     	else
             estimateJitter(packet);
             
-    	//update clock rate
-    	rtpClock.setClockRate(this.format.getClockRate());            		    		
+    	//update clock rate , do not use opus 48000 since it works on 8000
+    	rtpClock.setClockRate(8000);            		    		
         
     	ByteFrame f=null;
     	//drop outstanding packets

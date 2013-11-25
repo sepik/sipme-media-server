@@ -24,12 +24,12 @@
             <artifactId>rtp</artifactId>
             <version>${project.version}</version>
         </dependency>
-	      <!--<dependency>
+	<dependency>
             <groupId>ua.mobius.media.hardware</groupId>
             <artifactId>mobius-dahdi</artifactId>
             <version>${project.version}</version>
-        </dependency>-->
-	      <dependency>
+        </dependency>
+	<dependency>
             <groupId>ua.mobius.media.io</groupId>
             <artifactId>ss7</artifactId>
             <version>${project.version}</version>
@@ -81,12 +81,17 @@
             <artifactId>ilbc</artifactId>
             <version>${project.version}</version>
         </dependency>
-	<dependency>
+		<dependency>
             <groupId>ua.mobius.media.codecs</groupId>
             <artifactId>nativeilbc</artifactId>
             <version>${project.version}</version>
         </dependency>
-
+		<dependency>
+            <groupId>ua.mobius.media.codecs</groupId>
+            <artifactId>nativeopus</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        
         <dependency>
             <groupId>urbanophile</groupId>
             <artifactId>java-getopt</artifactId>
