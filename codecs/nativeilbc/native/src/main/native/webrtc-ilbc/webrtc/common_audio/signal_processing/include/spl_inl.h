@@ -39,7 +39,7 @@ static __inline int16_t WebRtcSpl_SubSatW16(int16_t var1, int16_t var2) {
 }
 
 static __inline int16_t WebRtcSpl_GetSizeInBits(uint32_t n) {
-  int bits;
+  int16_t bits;
 
   if (0xFFFF0000 & n) {
     bits = 16;

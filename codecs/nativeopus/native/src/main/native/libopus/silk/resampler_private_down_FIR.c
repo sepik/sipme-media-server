@@ -32,7 +32,7 @@ POSSIBILITY OF SUCH DAMAGE.
 #include "SigProc_FIX.h"
 #include "resampler_private.h"
 
-static inline opus_int16 *silk_resampler_private_down_FIR_INTERPOL(
+static __inline opus_int16 *silk_resampler_private_down_FIR_INTERPOL(
     opus_int16          *out,
     opus_int32          *buf,
     const opus_int16    *FIR_Coefs,

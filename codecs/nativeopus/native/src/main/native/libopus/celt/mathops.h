@@ -60,7 +60,7 @@ unsigned isqrt32(opus_uint32 _val);
          denorm, +/- inf and NaN are *not* handled */
 
 /** Base-2 log approximation (log2(x)). */
-static inline float celt_log2(float x)
+static __inline float celt_log2(float x)
 {
    int integer;
    float frac;
@@ -78,7 +78,7 @@ static inline float celt_log2(float x)
 }
 
 /** Base-2 exponential approximation (2^x). */
-static inline float celt_exp2(float x)
+static __inline float celt_exp2(float x)
 {
    int integer;
    float frac;
@@ -110,7 +110,7 @@ static inline float celt_exp2(float x)
 
 #ifndef OVERRIDE_CELT_ILOG2
 /** Integer log in base2. Undefined for zero and negative numbers */
-static inline opus_int16 celt_ilog2(opus_int32 x)
+static __inline opus_int16 celt_ilog2(opus_int32 x)
 {
    celt_assert2(x>0, "celt_ilog2() only defined for strictly positive numbers");
    return EC_ILOG(x)-1;
@@ -118,7 +118,7 @@ static inline opus_int16 celt_ilog2(opus_int32 x)
 #endif
 
 #ifndef OVERRIDE_CELT_MAXABS16
-static inline opus_val32 celt_maxabs16(const opus_val16 *x, int len)
+static __inline opus_val32 celt_maxabs16(const opus_val16 *x, int len)
 {
    int i;
    opus_val16 maxval = 0;
@@ -133,7 +133,7 @@ static inline opus_val32 celt_maxabs16(const opus_val16 *x, int len)
 #endif
 
 #ifndef OVERRIDE_CELT_MAXABS32
-static inline opus_val32 celt_maxabs32(opus_val32 *x, int len)
+static __inline opus_val32 celt_maxabs32(opus_val32 *x, int len)
 {
    int i;
    opus_val32 maxval = 0;
@@ -144,7 +144,7 @@ static inline opus_val32 celt_maxabs32(opus_val32 *x, int len)
 #endif
 
 /** Integer log in base2. Defined for zero, but not for negative numbers */
-static inline opus_int16 celt_zlog2(opus_val32 x)
+static __inline opus_int16 celt_zlog2(opus_val32 x)
 {
    return x <= 0 ? 0 : celt_ilog2(x);
 }
@@ -155,7 +155,7 @@ opus_val32 celt_sqrt(opus_val32 x);
 
 opus_val16 celt_cos_norm(opus_val32 x);
 
-static inline opus_val16 celt_log2(opus_val32 x)
+static __inline opus_val16 celt_log2(opus_val32 x)
 {
    int i;
    opus_val16 n, frac;
@@ -181,7 +181,7 @@ static inline opus_val16 celt_log2(opus_val32 x)
 #define D2 14819
 #define D3 10204
 /** Base-2 exponential approximation (2^x). (Q10 input, Q16 output) */
-static inline opus_val32 celt_exp2(opus_val16 x)
+static __inline opus_val32 celt_exp2(opus_val16 x)
 {
    int integer;
    opus_val16 frac;
@@ -208,7 +208,7 @@ opus_val32 frac_div32(opus_val32 a, opus_val32 b);
 
 /* Atan approximation using a 4th order polynomial. Input is in Q15 format
    and normalized by pi/4. Output is in Q15 format */
-static inline opus_val16 celt_atan01(opus_val16 x)
+static __inline opus_val16 celt_atan01(opus_val16 x)
 {
    return MULT16_16_P15(x, ADD32(M1, MULT16_16_P15(x, ADD32(M2, MULT16_16_P15(x, ADD32(M3, MULT16_16_P15(M4, x)))))));
 }
@@ -219,7 +219,7 @@ static inline opus_val16 celt_atan01(opus_val16 x)
 #undef M4
 
 /* atan2() approximation valid for positive input values */
-static inline opus_val16 celt_atan2p(opus_val16 y, opus_val16 x)
+static __inline opus_val16 celt_atan2p(opus_val16 y, opus_val16 x)
 {
    if (y < x)
    {

@@ -83,15 +83,15 @@ struct ec_ctx{
    int            error;
 };
 
-static inline opus_uint32 ec_range_bytes(ec_ctx *_this){
+static __inline opus_uint32 ec_range_bytes(ec_ctx *_this){
   return _this->offs;
 }
 
-static inline unsigned char *ec_get_buffer(ec_ctx *_this){
+static __inline unsigned char *ec_get_buffer(ec_ctx *_this){
   return _this->buf;
 }
 
-static inline int ec_get_error(ec_ctx *_this){
+static __inline int ec_get_error(ec_ctx *_this){
   return _this->error;
 }
 
@@ -101,7 +101,7 @@ static inline int ec_get_error(ec_ctx *_this){
   Return: The number of bits.
           This will always be slightly larger than the exact value (e.g., all
            rounding error is in the positive direction).*/
-static inline int ec_tell(ec_ctx *_this){
+static __inline int ec_tell(ec_ctx *_this){
   return _this->nbits_total-EC_ILOG(_this->rng);
 }
 

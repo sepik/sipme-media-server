@@ -42,7 +42,7 @@ typedef struct {
 } inv_D_t;
 
 /* Factorize square matrix A into LDL form */
-static inline void silk_LDL_factorize_FIX(
+static __inline void silk_LDL_factorize_FIX(
     opus_int32          *A,         /* I/O Pointer to Symetric Square Matrix                            */
     opus_int            M,          /* I   Size of Matrix                                               */
     opus_int32          *L_Q16,     /* I/O Pointer to Square Upper triangular Matrix                    */
@@ -50,7 +50,7 @@ static inline void silk_LDL_factorize_FIX(
 );
 
 /* Solve Lx = b, when L is lower triangular and has ones on the diagonal */
-static inline void silk_LS_SolveFirst_FIX(
+static __inline void silk_LS_SolveFirst_FIX(
     const opus_int32    *L_Q16,     /* I    Pointer to Lower Triangular Matrix                          */
     opus_int            M,          /* I    Dim of Matrix equation                                      */
     const opus_int32    *b,         /* I    b Vector                                                    */
@@ -58,14 +58,14 @@ static inline void silk_LS_SolveFirst_FIX(
 );
 
 /* Solve L^t*x = b, where L is lower triangular with ones on the diagonal */
-static inline void silk_LS_SolveLast_FIX(
+static __inline void silk_LS_SolveLast_FIX(
     const opus_int32    *L_Q16,     /* I    Pointer to Lower Triangular Matrix                          */
     const opus_int      M,          /* I    Dim of Matrix equation                                      */
     const opus_int32    *b,         /* I    b Vector                                                    */
     opus_int32          *x_Q16      /* O    x Vector                                                    */
 );
 
-static inline void silk_LS_divide_Q16_FIX(
+static __inline void silk_LS_divide_Q16_FIX(
     opus_int32          T[],        /* I/O  Numenator vector                                            */
     inv_D_t             *inv_D,     /* I    1 / D vector                                                */
     opus_int            M           /* I    dimension                                                   */
@@ -109,7 +109,7 @@ void silk_solve_LDL_FIX(
     silk_LS_SolveLast_FIX( L_Q16, M, Y, x_Q16 );
 }
 
-static inline void silk_LDL_factorize_FIX(
+static __inline void silk_LDL_factorize_FIX(
     opus_int32          *A,         /* I/O Pointer to Symetric Square Matrix                            */
     opus_int            M,          /* I   Size of Matrix                                               */
     opus_int32          *L_Q16,     /* I/O Pointer to Square Upper triangular Matrix                    */
@@ -181,7 +181,7 @@ static inline void silk_LDL_factorize_FIX(
     silk_assert( status == 0 );
 }
 
-static inline void silk_LS_divide_Q16_FIX(
+static __inline void silk_LS_divide_Q16_FIX(
     opus_int32          T[],        /* I/O  Numenator vector                                            */
     inv_D_t             *inv_D,     /* I    1 / D vector                                                */
     opus_int            M           /* I    dimension                                                   */
@@ -201,7 +201,7 @@ static inline void silk_LS_divide_Q16_FIX(
 }
 
 /* Solve Lx = b, when L is lower triangular and has ones on the diagonal */
-static inline void silk_LS_SolveFirst_FIX(
+static __inline void silk_LS_SolveFirst_FIX(
     const opus_int32    *L_Q16,     /* I    Pointer to Lower Triangular Matrix                          */
     opus_int            M,          /* I    Dim of Matrix equation                                      */
     const opus_int32    *b,         /* I    b Vector                                                    */
@@ -223,7 +223,7 @@ static inline void silk_LS_SolveFirst_FIX(
 }
 
 /* Solve L^t*x = b, where L is lower triangular with ones on the diagonal */
-static inline void silk_LS_SolveLast_FIX(
+static __inline void silk_LS_SolveLast_FIX(
     const opus_int32    *L_Q16,     /* I    Pointer to Lower Triangular Matrix                          */
     const opus_int      M,          /* I    Dim of Matrix equation                                      */
     const opus_int32    *b,         /* I    b Vector                                                    */

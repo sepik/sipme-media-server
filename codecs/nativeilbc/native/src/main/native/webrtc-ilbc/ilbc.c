@@ -144,6 +144,12 @@ int16_t WebRtcIlbcfix_Decode(iLBC_decinst_t *iLBCdec_inst,
   int i=0;
   /* Allow for automatic switching between the frame sizes
      (although you do get some discontinuity) */
+  
+  int16_t bitsMemory[sizeof(iLBC_bits)/sizeof(int16_t)];
+  iLBC_bits *enc_bits = (iLBC_bits*)bitsMemory;
+  int16_t lsfdeq[LPC_FILTERORDER*LPC_N_MAX];
+  int16_t syntdenum[66];
+  
   if ((len==((iLBC_Dec_Inst_t*)iLBCdec_inst)->no_of_bytes)||
       (len==2*((iLBC_Dec_Inst_t*)iLBCdec_inst)->no_of_bytes)||
       (len==3*((iLBC_Dec_Inst_t*)iLBCdec_inst)->no_of_bytes)) {
@@ -171,12 +177,6 @@ int16_t WebRtcIlbcfix_Decode(iLBC_decinst_t *iLBCdec_inst,
     }
   }
 
-  int16_t bitsMemory[sizeof(iLBC_bits)/sizeof(int16_t)];
-        iLBC_bits *enc_bits = (iLBC_bits*)bitsMemory;
-
-  int16_t lsfdeq[LPC_FILTERORDER*LPC_N_MAX];
-  int16_t syntdenum[66];
-
   while ((i*((iLBC_Dec_Inst_t*)iLBCdec_inst)->no_of_bytes)<len) {
     WebRtcIlbcfix_DecodeImpl(&decoded[i*((iLBC_Dec_Inst_t*)iLBCdec_inst)->blockl], (const uint16_t*) &encoded[i*((iLBC_Dec_Inst_t*)iLBCdec_inst)->no_of_words], (iLBC_Dec_Inst_t*) iLBCdec_inst, 1,enc_bits,lsfdeq,syntdenum);
     i++;
@@ -197,6 +197,9 @@ int16_t WebRtcIlbcfix_Decode20Ms(iLBC_decinst_t *iLBCdec_inst,
         iLBC_bits *enc_bits = (iLBC_bits*)bitsMemory;
 
   int i=0;
+  int16_t lsfdeq[LPC_FILTERORDER*LPC_N_MAX];
+  int16_t syntdenum[66];
+  
   if ((len==((iLBC_Dec_Inst_t*)iLBCdec_inst)->no_of_bytes)||
       (len==2*((iLBC_Dec_Inst_t*)iLBCdec_inst)->no_of_bytes)||
       (len==3*((iLBC_Dec_Inst_t*)iLBCdec_inst)->no_of_bytes)) {
@@ -204,9 +207,6 @@ int16_t WebRtcIlbcfix_Decode20Ms(iLBC_decinst_t *iLBCdec_inst,
   } else {
     return(-1);
   }
-
-        int16_t lsfdeq[LPC_FILTERORDER*LPC_N_MAX];
-  int16_t syntdenum[66];
 
   while ((i*((iLBC_Dec_Inst_t*)iLBCdec_inst)->no_of_bytes)<len) {
     WebRtcIlbcfix_DecodeImpl(&decoded[i*((iLBC_Dec_Inst_t*)iLBCdec_inst)->blockl], (const uint16_t*) &encoded[i*((iLBC_Dec_Inst_t*)iLBCdec_inst)->no_of_words], (iLBC_Dec_Inst_t*) iLBCdec_inst, 1,enc_bits,lsfdeq,syntdenum);
@@ -227,6 +227,9 @@ int16_t WebRtcIlbcfix_Decode30Ms(iLBC_decinst_t *iLBCdec_inst,
         iLBC_bits *enc_bits = (iLBC_bits*)bitsMemory;
 
   int i=0;
+  int16_t lsfdeq[LPC_FILTERORDER*LPC_N_MAX];
+  int16_t syntdenum[66];
+
   if ((len==((iLBC_Dec_Inst_t*)iLBCdec_inst)->no_of_bytes)||
       (len==2*((iLBC_Dec_Inst_t*)iLBCdec_inst)->no_of_bytes)||
       (len==3*((iLBC_Dec_Inst_t*)iLBCdec_inst)->no_of_bytes)) {
@@ -234,9 +237,6 @@ int16_t WebRtcIlbcfix_Decode30Ms(iLBC_decinst_t *iLBCdec_inst,
   } else {
     return(-1);
   }
-
-        int16_t lsfdeq[LPC_FILTERORDER*LPC_N_MAX];
-  int16_t syntdenum[66];
 
   while ((i*((iLBC_Dec_Inst_t*)iLBCdec_inst)->no_of_bytes)<len) {
     WebRtcIlbcfix_DecodeImpl(&decoded[i*((iLBC_Dec_Inst_t*)iLBCdec_inst)->blockl], (const uint16_t*) &encoded[i*((iLBC_Dec_Inst_t*)iLBCdec_inst)->no_of_words], (iLBC_Dec_Inst_t*) iLBCdec_inst, 1,enc_bits,lsfdeq,syntdenum);

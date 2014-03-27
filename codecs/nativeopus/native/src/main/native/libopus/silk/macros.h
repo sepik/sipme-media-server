@@ -76,7 +76,7 @@ POSSIBILITY OF SUCH DAMAGE.
                                         (( (a) & ((b)^0x80000000) & 0x80000000) ? silk_int32_MIN : (a)-(b)) :    \
                                         ((((a)^0x80000000) & (b)  & 0x80000000) ? silk_int32_MAX : (a)-(b)) )
 
-static inline opus_int32 silk_CLZ16(opus_int16 in16)
+static __inline opus_int32 silk_CLZ16(opus_int16 in16)
 {
     opus_int32 out32 = 0;
     if( in16 == 0 ) {
@@ -112,7 +112,7 @@ static inline opus_int32 silk_CLZ16(opus_int16 in16)
     }
 }
 
-static inline opus_int32 silk_CLZ32(opus_int32 in32)
+static __inline opus_int32 silk_CLZ32(opus_int32 in32)
 {
     /* test highest 16 bits and convert to opus_int16 */
     if( in32 & 0xFFFF0000 ) {

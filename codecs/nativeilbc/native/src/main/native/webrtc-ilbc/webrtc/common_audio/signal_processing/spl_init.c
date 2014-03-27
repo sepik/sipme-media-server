@@ -106,7 +106,7 @@ static void InitFunctionPointers(void) {
 #endif  /* WEBRTC_DETECT_ARM_NEON */
 }
 
-//#if defined(WEBRTC_POSIX)
+#if defined(WEBRTC_POSIX)
 #include <pthread.h>
 
 static void once(void (*func)(void)) {
@@ -114,10 +114,10 @@ static void once(void (*func)(void)) {
   pthread_once(&lock, func);
 }
 
-//#elif defined(_WIN32)
-//#include <windows.h>
+#elif defined(_WIN32)
+#include <windows.h>
 
-//static void once(void (*func)(void)) {
+ static void once(void (*func)(void)) {
   /* Didn't use InitializeCriticalSection() since there's no race-free context
    * in which to execute it.
    *
@@ -125,22 +125,22 @@ static void once(void (*func)(void)) {
    * InterlockedCompareExchangePointer) to avoid issues similar to
    * http://code.google.com/p/webm/issues/detail?id=467.
    */
-  //static CRITICAL_SECTION lock = {(void *)((size_t)-1), -1, 0, 0, 0, 0};
-  //static int done = 0;
+  static CRITICAL_SECTION lock = {(void *)((size_t)-1), -1, 0, 0, 0, 0};
+  static int done = 0;
 
-  //EnterCriticalSection(&lock);
-  //if (!done) {
-  //  func();
-  //  done = 1;
- // }
-  //LeaveCriticalSection(&lock);
-//}
+  EnterCriticalSection(&lock);
+  if (!done) {
+    func();
+    done = 1;
+  }
+  LeaveCriticalSection(&lock);
+}
 
 /* There's no fallback version as an #else block here to ensure thread safety.
  * In case of neither pthread for WEBRTC_POSIX nor _WIN32 is present, build
  * system should pick it up.
  */
-//#endif  /* WEBRTC_POSIX */
+#endif  /* WEBRTC_POSIX */
 
 void WebRtcSpl_Init() {
   once(InitFunctionPointers);

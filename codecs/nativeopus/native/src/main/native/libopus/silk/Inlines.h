@@ -41,7 +41,7 @@ extern "C"
 #endif
 
 /* count leading zeros of opus_int64 */
-static inline opus_int32 silk_CLZ64( opus_int64 in )
+static __inline opus_int32 silk_CLZ64( opus_int64 in )
 {
     opus_int32 in_upper;
 
@@ -56,7 +56,7 @@ static inline opus_int32 silk_CLZ64( opus_int64 in )
 }
 
 /* get number of leading zeros and fractional part (the bits right after the leading one */
-static inline void silk_CLZ_FRAC(
+static __inline void silk_CLZ_FRAC(
     opus_int32 in,            /* I  input                               */
     opus_int32 *lz,           /* O  number of leading zeros             */
     opus_int32 *frac_Q7       /* O  the 7 bits right after the leading one */
@@ -71,7 +71,7 @@ static inline void silk_CLZ_FRAC(
 /* Approximation of square root                                          */
 /* Accuracy: < +/- 10%  for output values > 15                           */
 /*           < +/- 2.5% for output values > 120                          */
-static inline opus_int32 silk_SQRT_APPROX( opus_int32 x )
+static __inline opus_int32 silk_SQRT_APPROX( opus_int32 x )
 {
     opus_int32 y, lz, frac_Q7;
 
@@ -97,7 +97,7 @@ static inline opus_int32 silk_SQRT_APPROX( opus_int32 x )
 }
 
 /* Divide two int32 values and return result as int32 in a given Q-domain */
-static inline opus_int32 silk_DIV32_varQ(   /* O    returns a good approximation of "(a32 << Qres) / b32" */
+static __inline opus_int32 silk_DIV32_varQ(   /* O    returns a good approximation of "(a32 << Qres) / b32" */
     const opus_int32     a32,               /* I    numerator (Q0)                  */
     const opus_int32     b32,               /* I    denominator (Q0)                */
     const opus_int       Qres               /* I    Q-domain of result (>= 0)       */
@@ -143,7 +143,7 @@ static inline opus_int32 silk_DIV32_varQ(   /* O    returns a good approximation
 }
 
 /* Invert int32 value and return result as int32 in a given Q-domain */
-static inline opus_int32 silk_INVERSE32_varQ(   /* O    returns a good approximation of "(1 << Qres) / b32" */
+static __inline opus_int32 silk_INVERSE32_varQ(   /* O    returns a good approximation of "(1 << Qres) / b32" */
     const opus_int32     b32,                   /* I    denominator (Q0)                */
     const opus_int       Qres                   /* I    Q-domain of result (> 0)        */
 )

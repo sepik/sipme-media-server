@@ -57,6 +57,18 @@
 				<module>linux</module>
 			</modules>
 		</profile>
+		<profile>
+			<id>ilbcwindows</id>
+			<activation>
+				<property>
+					<name>platform</name>
+					<value>win32</value>
+				</property>
+			</activation>
+			<modules>
+				<module>windows</module>
+			</modules>
+		</profile>
 		<!--profile>
 			<id>maven-release</id>
 			<modules>

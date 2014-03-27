@@ -32,7 +32,7 @@ POSSIBILITY OF SUCH DAMAGE.
 #include "main.h"
 
 /* Silk VAD noise level estimation */
-static inline void silk_VAD_GetNoiseLevels(
+static __inline void silk_VAD_GetNoiseLevels(
     const opus_int32             pX[ VAD_N_BANDS ], /* I    subband energies                            */
     silk_VAD_state              *psSilk_VAD         /* I/O  Pointer to Silk VAD state                   */
 );
@@ -269,7 +269,7 @@ opus_int silk_VAD_GetSA_Q8(                                     /* O    Return v
 /**************************/
 /* Noise level estimation */
 /**************************/
-static inline void silk_VAD_GetNoiseLevels(
+static __inline void silk_VAD_GetNoiseLevels(
     const opus_int32            pX[ VAD_N_BANDS ],  /* I    subband energies                            */
     silk_VAD_state              *psSilk_VAD         /* I/O  Pointer to Silk VAD state                   */
 )

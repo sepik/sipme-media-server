@@ -53,6 +53,9 @@ void WebRtcIlbcfix_DecodeImpl(
   int16_t last_bit;
   int16_t *data;
   /* Stack based */
+  int16_t bitsMemory[sizeof(iLBC_bits)/sizeof(int16_t)];
+  iLBC_bits *iLBCbits_inst = (iLBC_bits*)bitsMemory;
+
   int16_t decresidual[BLOCKL_MAX];
   int16_t PLCresidual[BLOCKL_MAX + LPC_FILTERORDER];
   int16_t PLClpc[LPC_FILTERORDER + 1];
@@ -63,21 +66,18 @@ void WebRtcIlbcfix_DecodeImpl(
   /* Reuse some buffers that are non overlapping in order to save stack memory */
   data = &PLCresidual[LPC_FILTERORDER];
 
- int16_t bitsMemory[sizeof(iLBC_bits)/sizeof(int16_t)];
-        iLBC_bits *iLBCbits_inst = (iLBC_bits*)bitsMemory;
-
   if (mode) { /* the data are good */
 
     /* decode data */
 
     /* Unpacketize bits into parameters */
 
-//#ifndef WEBRTC_BIG_ENDIAN
-//    WebRtcIlbcfix_SwapBytes(bytes, iLBCdec_inst->no_of_words, swapped);
-//    last_bit = WebRtcIlbcfix_UnpackBits(swapped, iLBCbits_inst, iLBCdec_inst->mode);
-//#else
+#ifndef WEBRTC_BIG_ENDIAN
+    WebRtcIlbcfix_SwapBytes(bytes, iLBCdec_inst->no_of_words, swapped);
+    last_bit = WebRtcIlbcfix_UnpackBits(swapped, iLBCbits_inst, iLBCdec_inst->mode);
+#else
     last_bit = WebRtcIlbcfix_UnpackBits(bytes, iLBCbits_inst, iLBCdec_inst->mode);
-//#endif
+#endif
 
     /* Check for bit errors */
     if (iLBCbits_inst->startIdx<1)

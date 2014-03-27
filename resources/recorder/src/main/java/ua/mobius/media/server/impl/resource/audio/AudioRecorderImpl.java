@@ -51,6 +51,7 @@ import ua.mobius.media.server.spi.memory.ByteFrame;
 import ua.mobius.media.server.spi.recorder.Recorder;
 import ua.mobius.media.server.spi.recorder.RecorderEvent;
 import ua.mobius.media.server.spi.recorder.RecorderListener;
+import ua.mobius.media.server.spi.Endpoint;
 
 import org.apache.log4j.Logger;
 
@@ -197,10 +198,11 @@ public class AudioRecorderImpl extends AbstractCompoundSink implements Recorder 
         try {
             writeToWaveFile();
         } catch (IOException e) {
-        	if(getEndpoint()==null)
+        	Endpoint endpoint=getEndpoint();
+        	if(endpoint==null)
         		logger.error(e);
         	else
-        		logger.error("(" + getEndpoint().getLocalName() + ")",e);        		
+        		logger.error("(" + endpoint.getLocalName() + ")",e);        		
         }
         
         //send event
@@ -348,10 +350,11 @@ public class AudioRecorderImpl extends AbstractCompoundSink implements Recorder 
         //if append specified and file really exist copy data from the current
         //file to temp
         if (append && file.exists()) {
-        	if(getEndpoint()==null)
+        	Endpoint endpoint=getEndpoint();
+        	if(endpoint==null)
         		logger.info("..............>>>>>Copying samples from " + file);
         	else
-        		logger.info("(" + getEndpoint().getLocalName() + ") ..............>>>>>Copying samples from " + file);        		
+        		logger.info("(" + endpoint.getLocalName() + ") ..............>>>>>Copying samples from " + file);        		
             copySamples(file, fout);                       
         }
     }
@@ -362,10 +365,11 @@ public class AudioRecorderImpl extends AbstractCompoundSink implements Recorder 
      * @throws IOException 
      */
     private void writeToWaveFile() throws IOException {
-    	if(getEndpoint()==null)
+    	Endpoint endpoint=getEndpoint();
+    	if(endpoint==null)
     		logger.info("!!!!!!!!!! Writting to file......................");
     	else
-    		logger.info("(" + getEndpoint().getLocalName() + ") !!!!!!!!!! Writting to file......................");
+    		logger.info("(" + endpoint.getLocalName() + ") !!!!!!!!!! Writting to file......................");
     	
         //stop called on inactive recorder
         if (fout == null) {
@@ -379,10 +383,10 @@ public class AudioRecorderImpl extends AbstractCompoundSink implements Recorder 
         fout = new FileOutputStream(file);
         
         int size = fin.available();
-        if(getEndpoint()==null)
+        if(endpoint==null)
         	logger.info("!!!!!!!!!! Size=" + size);
         else
-        	logger.info("(" + getEndpoint().getLocalName() + ") !!!!!!!!!! Size=" + size);
+        	logger.info("(" + endpoint.getLocalName() + ") !!!!!!!!!! Size=" + size);
         
 		headerBuffer.clear();		
         //RIFF
@@ -467,10 +471,10 @@ public class AudioRecorderImpl extends AbstractCompoundSink implements Recorder 
         //lets write data
         FileChannel inChannel=fin.getChannel();
         outChannel.transferFrom(fin.getChannel(), 44, inChannel.size());
-        if(getEndpoint()==null)
+        if(endpoint==null)
         	logger.info("Was copied " + inChannel.size()  + " bytes");
         else
-        	logger.info("(" + getEndpoint().getLocalName() + ") Was copied " + inChannel.size()  + " bytes");        
+        	logger.info("(" + endpoint.getLocalName() + ") Was copied " + inChannel.size()  + " bytes");        
         
         
         fout.flush();
@@ -509,11 +513,12 @@ public class AudioRecorderImpl extends AbstractCompoundSink implements Recorder 
     private void copyData(FileChannel inChannel, int offset,  FileChannel outChannel) throws IOException {
     	long count=inChannel.size()-(long)offset;
     	inChannel.transferTo(offset,count,outChannel);    	
-                        
-    	if(getEndpoint()==null)
+           
+    	Endpoint endpoint=getEndpoint();
+    	if(endpoint==null)
         	logger.info("Was copied " + count  + " bytes");
         else
-        	logger.info("(" + getEndpoint().getLocalName() + ") Was copied " + count + " bytes");                    	        
+        	logger.info("(" + endpoint.getLocalName() + ") Was copied " + count + " bytes");                    	        
     }
     
     /**

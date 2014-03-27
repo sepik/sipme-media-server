@@ -75,7 +75,7 @@ int opus_decode_native(OpusDecoder *st, const unsigned char *data, opus_int32 le
       opus_val16 *pcm, int frame_size, int decode_fec, int self_delimited, int *packet_offset);
 
 /* Make sure everything's aligned to sizeof(void *) bytes */
-static inline int align(int i)
+static __inline int align(int i)
 {
     return (i+sizeof(void *)-1)&-((int)sizeof(void *));
 }
