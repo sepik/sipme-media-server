@@ -55,7 +55,8 @@ public class ChannelsManager {
 
     private Scheduler scheduler;
     
-    private int jitterBufferSize=50;
+    private int jitterBufferSize=60;
+    private int maxJitterBufferSize=300;
     
     //channel id generator
     private AtomicInteger channelIndex=new AtomicInteger(100);
@@ -103,6 +104,14 @@ public class ChannelsManager {
     public void setJitterBufferSize(int jitterBufferSize) {
     	this.jitterBufferSize=jitterBufferSize;
     }        
+    
+    public int getMaxJitterBufferSize() {
+    	return this.maxJitterBufferSize;
+    }
+    
+    public void setMaxJitterBufferSize(int maxJitterBufferSize) {
+    	this.maxJitterBufferSize=maxJitterBufferSize;
+    }   
     
     public UdpManager getUdpManager() {
     	return this.udpManager;

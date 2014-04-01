@@ -42,6 +42,9 @@ import ua.mobius.media.server.spi.memory.ShortMemory;
 public class AudioInput extends AbstractAudioSink {
     private int inputId;
     private int limit=3;
+    private int currLimit=3;
+    private int maxLimit=12;
+    
     private ConcurrentCyclicFIFO<ShortFrame> buffer = new ConcurrentCyclicFIFO();
     private ShortFrame activeFrame=null;
     private short[] activeData;
@@ -74,6 +77,16 @@ public class AudioInput extends AbstractAudioSink {
     	
     }
     
+    public void setInitialAudioChannelBuffer(int value)
+    {
+    	limit=value;
+    }
+    
+    public void setMaxAudioChannelBuffer(int value)
+    {
+    	maxLimit=value;
+    }
+    
     @Override
     public void onMediaTransfer(ShortFrame frame) throws IOException {
     	//generate frames with correct size here , aggregate frames if needed.
@@ -102,9 +115,15 @@ public class AudioInput extends AbstractAudioSink {
     			System.arraycopy(oldData, count, activeData, byteIndex, activeData.length-byteIndex);
     			count+=activeData.length-byteIndex;
     			
-    			if (buffer.size() >= limit) 
-            		buffer.poll().recycle();
-                
+    			if (buffer.size() >= currLimit) 
+    			{
+    				while(buffer.size()>0)
+    					buffer.poll().recycle();
+    				
+    				if(currLimit<maxLimit)
+    					currLimit+=limit;	    			    				    				    	
+    			}
+    			
             	buffer.offer(activeFrame);
             	
             	activeFrame=null;
@@ -131,11 +150,27 @@ public class AudioInput extends AbstractAudioSink {
      */
     public ShortFrame poll() {
         return buffer.poll();
-    }    
+    }
+
+    /**
+     * Recycles input stream
+     */
+    public void recycle() {
+    	while(buffer.size()>0)
+    		buffer.poll().recycle();
+    	
+    	if(activeFrame!=null)
+    		activeFrame.recycle();
+    	
+        activeFrame=null;
+		activeData=null;
+		byteIndex=0;		        
+    }
     
     public void resetBuffer()
     {
+    	currLimit=limit;
     	while(buffer.size()>0)
     		buffer.poll().recycle();
-    }
+    }        
 }

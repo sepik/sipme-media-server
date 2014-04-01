@@ -113,6 +113,16 @@ public class RtpConnectionImpl extends BaseConnection implements RTPChannelListe
         template = new SdpTemplate(audioFormats,null);
     }
 
+    public void setInitialAudioChannelBuffer(int value)
+    {
+    	this.rtpAudioChannel.setInitialAudioChannelBuffer(value);
+    }
+    
+    public void setMaxAudioChannelBuffer(int value)
+    {
+    	this.rtpAudioChannel.setMaxAudioChannelBuffer(value);
+    }
+    
     public AudioComponent getAudioComponent()
     {
     	return this.rtpAudioChannel.getAudioComponent();

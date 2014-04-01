@@ -33,7 +33,7 @@ import ua.mobius.media.server.utils.Text;
 
 /**
  *
- * @author kulikov
+ * @author yulian oifa
  */
 public class AVProfile {
 	public final static int telephoneEventsID=101;
@@ -51,6 +51,15 @@ public class AVProfile {
     private final static RTPFormat l16 = new RTPFormat(97, FormatFactory.createAudioFormat("l16", 8000, 16, 1), 8000);    
     private final static RTPFormat dtmf = new RTPFormat(telephoneEventsID, telephoneEvent, 8000);
     private final static RTPFormat ilbc = new RTPFormat(102, FormatFactory.createAudioFormat("ilbc", 8000, 16, 1), 8000);
+    
+    public final static int opusID=109;
+    public final static AudioFormat opusFormat = FormatFactory.createAudioFormat("opus", 48000);
+    static {
+    	opusFormat.setOptions(new Text("maxcodedaudiobandwidth=8000 minptime=10"));
+    }
+    
+    private final static RTPFormat opus = new RTPFormat(opusID, opusFormat, 48000);
+    
     private final static RTPFormat linear = new RTPFormat(150, FormatFactory.createAudioFormat("linear", 8000, 16, 1), 8000);
 
     private final static RTPFormat H261 = new RTPFormat(45, FormatFactory.createVideoFormat("h261"));
@@ -60,10 +69,11 @@ public class AVProfile {
     static {
         audio.add(pcma);
         audio.add(pcmu);
+        audio.add(opus);
+        audio.add(ilbc);
         audio.add(gsm);
         audio.add(g729);
         audio.add(l16);
-        audio.add(ilbc);
         audio.add(dtmf);
     }
 

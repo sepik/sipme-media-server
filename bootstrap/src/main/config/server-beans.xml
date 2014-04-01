@@ -37,7 +37,8 @@
             <parameter><inject bean="localhost"/></parameter>
         </constructor>
         <property name="scheduler"><inject bean="Scheduler" /></property>
-        <property name="jitterBufferSize">50</property>
+        <property name="jitterBufferSize">60</property>
+        <property name="maxJitterBufferSize">900</property>
         <!--<property name="SS7Manager"><inject bean="SS7" /></property>-->
     </bean>
 
@@ -70,7 +71,11 @@
 		<property name="dtmfDetectorDbi">-35</property>
 		<property name="oobToneDuration">160</property>
 		<property name="oobEndTonePackets">3</property>
-		<property name="growEndDuration">false</property>		
+		<property name="growEndDuration">false</property>	
+		<!-- For optimized perfomance should be equal to jitter buffer size / 20 -->
+        <property name="initialAudioChannelBuffer">3</property>
+        <!-- For optimized perfomance should be equal to max jitter buffer size / 20 -->
+        <property name="maxAudioChannelBuffer">45</property>		
     </bean>
     
     <!-- MGCP Controller definition -->

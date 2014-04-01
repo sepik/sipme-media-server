@@ -73,6 +73,12 @@ public class JitterBuffer implements Serializable {
     //allowed jitter
     private long jitterBufferSize;
     
+    //current jitter
+    private long currentJitterBufferSize;
+    
+    //allowed max jitter
+    private long maxJitterBufferSize=900;
+    
     //packet arrival dead line measured on RTP clock.
     //initial value equals to infinity
     private long arrivalDeadLine = 0;
@@ -114,15 +120,22 @@ public class JitterBuffer implements Serializable {
     
     private Boolean useBuffer=true;
     
+    private RTPDataChannel channel=null;
+    
+    private int[] lastBursts=new int[3];  
+    
     private final static Logger logger = Logger.getLogger(JitterBuffer.class);
     /**
      * Creates new instance of jitter.
      * 
      * @param clock the rtp clock.
      */
-    public JitterBuffer(RtpClock clock, int jitterBufferSize) {
+    public JitterBuffer(RtpClock clock, int jitterBufferSize,int maxJitterBufferSize,RTPDataChannel channel) 
+    {
         this.rtpClock = clock;
-        this.jitterBufferSize = jitterBufferSize;        
+        this.jitterBufferSize = jitterBufferSize;
+        this.currentJitterBufferSize=this.jitterBufferSize*2;
+        this.channel=channel;
     }
 
     private void initJitter(RtpPacket firstPacket) {
@@ -231,7 +244,7 @@ public class JitterBuffer implements Serializable {
     public void setListener(BufferListener listener) {
         this.listener = listener;
     }
-
+    
     /**
      * Accepts specified packet
      *
@@ -264,7 +277,8 @@ public class JitterBuffer implements Serializable {
     	else
             estimateJitter(packet);
             
-    	//update clock rate , do not use opus 48000 since it works on 8000
+    	//update clock rate
+    	//all our codecs works on real 8000
     	rtpClock.setClockRate(8000);            		    		
         
     	ByteFrame f=null;
@@ -272,7 +286,7 @@ public class JitterBuffer implements Serializable {
 		//packet is outstanding if its timestamp of arrived packet is less
 		//then consumer media time
 		if (packet.getTimestamp() < this.arrivalDeadLine) {
-			System.out.println("drop packet: dead line=" + arrivalDeadLine
+			logger.info("drop packet: dead line=" + arrivalDeadLine
                 + ", packet time=" + packet.getTimestamp() + ", seq=" + packet.getSeqNumber()
                 + ", payload length=" + packet.getPayloadLength() + ", format=" + this.format.toString());
 			dropCount++;
@@ -316,7 +330,7 @@ public class JitterBuffer implements Serializable {
     		}
     				    			
     		queue.add(currIndex+1, f);
-    			
+    		
     		//recalculate duration of each frame in queue and overall duration , since we could insert the
     		//frame in the middle of the queue    			
     		duration=0;    			
@@ -343,23 +357,38 @@ public class JitterBuffer implements Serializable {
     			    			
     		//overflow?
     		//only now remove packet if overflow , possibly the same packet we just received
-    		if (queue.size()>QUEUE_SIZE) {
-    			//System.out.println("Buffer overflow");    			
-    			dropCount++;        			
-    			queue.remove(0).recycle();    				
-    		}    		
+    		//lets keep last packet to block UDP resending which may occure on 3G network
+    		if (duration>currentJitterBufferSize) 
+    		{    			
+    			if(currentJitterBufferSize<maxJitterBufferSize)
+    			{
+    				dropCount+=queue.size();        			
+        			while(queue.size()>0)
+        				queue.remove(0).recycle();
+        			
+	    			currentJitterBufferSize+=jitterBufferSize;
+	    			logger.info("Clearing and increasing jitter buffer size to " + currentJitterBufferSize);
+    			}
+    			else
+    			{
+    				while(queue.size()>0)
+    					queue.remove(0).recycle();
+    				
+    				logger.info("Dropping packet");
+    			}
+    		}
     			    		       
     		//check if this buffer already full
     		if (!ready) {    			
     			ready = !useBuffer || (duration >= jitterBufferSize && queue.size() > 1);
-    			if (ready) {    				
+    			if (ready) {    	
     				if (listener != null) {
     					listener.onFill();
     				}
     			}
     		}
     	}
-    }        
+    }
 
     /**
      * Polls packet from buffer's head.
@@ -402,6 +431,7 @@ public class JitterBuffer implements Serializable {
     }
     
     public void restart() {
+    	this.channel.codecChanged();
     	reset();
     	this.ready=false;
     	arrivalDeadLine = 0;
@@ -409,5 +439,7 @@ public class JitterBuffer implements Serializable {
     	droppedInRaw=0;
     	format=null;
     	isn=-1;
+    	lastBursts[0]=lastBursts[1]=lastBursts[2]=0;
+    	this.currentJitterBufferSize=jitterBufferSize*2;
     }
 }

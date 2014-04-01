@@ -89,9 +89,6 @@ public class RTPDataChannel {
     //RTP clock
     private RtpClock rtpClock,oobClock;
 
-    //allowed jitter
-    private int jitterBufferSize;
-
     //Media stream format
     private RTPFormats rtpFormats = new RTPFormats();
 
@@ -135,8 +132,7 @@ public class RTPDataChannel {
      */
     protected RTPDataChannel(ChannelsManager channelsManager,int channelId,int oobToneDuration,int oobEndTonePackets,Boolean growEndDuration) {    	
         this.channelsManager = channelsManager;
-        this.jitterBufferSize = channelsManager.getJitterBufferSize();
-
+        
         //open data channel
         rtpHandler = new RTPHandler();
 
@@ -144,7 +140,7 @@ public class RTPDataChannel {
         rtpClock = new RtpClock(channelsManager.getClock());
         oobClock = new RtpClock(channelsManager.getClock());
         
-        rxBuffer = new JitterBuffer(rtpClock, jitterBufferSize);
+        rxBuffer = new JitterBuffer(rtpClock, channelsManager.getJitterBufferSize(),channelsManager.getMaxJitterBufferSize(), this);
         
         scheduler=channelsManager.getScheduler();
         udpManager=channelsManager.getUdpManager();
@@ -176,6 +172,16 @@ public class RTPDataChannel {
     	return this.oobComponent;
     }
     
+    public void setInitialAudioChannelBuffer(int value)
+    {
+    	this.input.setInitialAudioChannelBuffer(value);
+    }
+    
+    public void setMaxAudioChannelBuffer(int value)
+    {
+    	this.input.setMaxAudioChannelBuffer(value);
+    }
+    
     public void setDsp(AudioProcessor dsp) {
     	this.dsp=dsp;
     	input.setDsp(dsp);
@@ -189,6 +195,11 @@ public class RTPDataChannel {
     
     public void setRtpChannelListener(RTPChannelListener rtpChannelListener) {
     	this.rtpChannelListener=rtpChannelListener;
+    }
+    
+    protected void codecChanged()
+    {
+    	input.resetBuffer();
     }
     
     public void updateMode(ConnectionMode connectionMode)
@@ -241,7 +252,7 @@ public class RTPDataChannel {
     	if(this.remotePeer!=null)
     		connectImmediately=udpManager.connectImmediately((InetSocketAddress)this.remotePeer);
     	
-    	if(udpManager.getRtpTimeout()>0 && this.remotePeer!=null && !connectImmediately) {
+    	if(udpManager.getRtpTimeout()>0 && this.remotePeer!=null) {
     		if(shouldReceive) {
     			lastPacketReceived=scheduler.getClock().getTime();
     			scheduler.submitHeatbeat(heartBeat);
@@ -314,7 +325,7 @@ public class RTPDataChannel {
     			}
     		
     		connectImmediately=udpManager.connectImmediately((InetSocketAddress)address);
-        	if(connectImmediately)
+    		if(connectImmediately)
         		try {
         			dataChannel.connect(address);        		
         		}
@@ -575,7 +586,7 @@ public class RTPDataChannel {
                 catch (IOException e) {  
                 	logger.error(e);                	
                 }
-                                	
+                         
                 while (currAddress != null) {
                 	lastPacketReceived=scheduler.getClock().getTime();                	
                     //put pointer to the begining of the buffer
@@ -658,6 +669,12 @@ public class RTPDataChannel {
         		return;
         	}
         	
+        	//ignore frames with duplicate timestamp
+            if (frame.getTimestamp()/1000000L == dtmfTimestamp) {
+            	frame.recycle();
+            	return;
+            }
+            
         	//convert to milliseconds first
         	dtmfTimestamp = frame.getTimestamp() / 1000000L;
 

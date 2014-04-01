@@ -177,28 +177,17 @@ public class RTPInput extends AbstractCompoundSource implements BufferListener {
     	ShortFrame outputFrame=null;
     	if(currFrame!=null)
         {
-    		//do the transcoding job
-        	if (dsp != null) {
+    		if (dsp != null) {
         		try
         		{
         			outputFrame = dsp.decode(currFrame);
         		}
         		catch(Exception e)
         		{        			
-        			//transcoding error , print error and try to move to next frame
         			logger.error(e);
         		}
         	}        	
         }
-    	
-    	if(outputFrame!=null)
-    	{
-    		/*System.out.print("OUTPUT:");
-        	for(int i=0;i<5;i++)
-    			System.out.print(outputFrame.getData()[i] + ",");
-    		
-    		System.out.println("");*/
-    	}
     	
     	return outputFrame; 
     }    
@@ -320,6 +309,28 @@ public class RTPInput extends AbstractCompoundSource implements BufferListener {
         }
         
         wakeup();
+    }
+    
+    @Override
+    public void activate()
+    {
+    	input.resetBuffer();
+    	super.activate();
+    }
+    
+    public void resetBuffer()
+    {
+    	input.resetBuffer();
+    }
+    
+    public void setInitialAudioChannelBuffer(int value)
+    {
+    	this.input.setInitialAudioChannelBuffer(value);
+    }
+    
+    public void setMaxAudioChannelBuffer(int value)
+    {
+    	this.input.setMaxAudioChannelBuffer(value);
     }
     
     @Override

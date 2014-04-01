@@ -105,6 +105,9 @@ public class ResourcesPool implements ComponentFactory {
 	private Integer oobToneDuration=140;
 	private Integer oobEndTonePackets=3;
 	
+	private int initialAudioChannelBuffer=3;
+	private int maxAudioChannelBuffer=3;
+	
 	public ResourcesPool(Scheduler scheduler,ChannelsManager channelsManager,DspFactory dspFactory)
 	{
 		this.scheduler=scheduler;
@@ -186,11 +189,22 @@ public class ResourcesPool implements ComponentFactory {
 		this.growEndDuration=value;
 	}
 	
+	public void setInitialAudioChannelBuffer(int value)
+	{
+		this.initialAudioChannelBuffer=value;
+	}
+	
+	public void setMaxAudioChannelBuffer(int value)
+	{
+		this.maxAudioChannelBuffer=value;
+	}
+	
 	public void start()
 	{
 		for(int i=0;i<defaultPlayers;i++)
 		{
 			AudioPlayerImpl player=new AudioPlayerImpl("player",scheduler);
+			
 			try {
 				player.setDsp(dspFactory.newAudioProcessor());
 			}
@@ -242,7 +256,13 @@ public class ResourcesPool implements ComponentFactory {
 		localConnectionsCount.set(defaultLocalConnections);
 		
 		for(int i=0;i<defaultRemoteConnections;i++)
-			remoteConnections.offer(new RtpConnectionImpl(connectionId.incrementAndGet(),channelsManager,dspFactory,oobToneDuration,oobEndTonePackets,growEndDuration));
+		{
+			RtpConnectionImpl current=new RtpConnectionImpl(connectionId.incrementAndGet(),channelsManager,dspFactory,oobToneDuration,oobEndTonePackets,growEndDuration);
+			current.setInitialAudioChannelBuffer(initialAudioChannelBuffer);
+			current.setMaxAudioChannelBuffer(maxAudioChannelBuffer);
+			remoteConnections.offer(current);
+			
+		}
 		
 		rtpConnectionsCount.set(defaultRemoteConnections);				
 	}
@@ -282,6 +302,7 @@ public class ResourcesPool implements ComponentFactory {
 				if(result==null)
 				{
 					result=new AudioPlayerImpl("player",scheduler);
+					
 					try {
 						((AudioPlayerImpl)result).setDsp(dspFactory.newAudioProcessor());
 					}
@@ -396,6 +417,9 @@ public class ResourcesPool implements ComponentFactory {
 			if(result==null)
 			{
 				result=new RtpConnectionImpl(connectionId.incrementAndGet(),channelsManager,dspFactory,oobToneDuration,oobEndTonePackets,growEndDuration);
+				((RtpConnectionImpl)result).setInitialAudioChannelBuffer(initialAudioChannelBuffer);
+				((RtpConnectionImpl)result).setMaxAudioChannelBuffer(maxAudioChannelBuffer);
+				
 				rtpConnectionsCount.incrementAndGet();
 			}
 			
