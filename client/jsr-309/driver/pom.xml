@@ -4,12 +4,12 @@
     <parent>
         <groupId>ua.mobius.media.client</groupId>
         <artifactId>jsr-309</artifactId>
-        <version>4.0.1-SNAPSHOT</version>
+        <version>4.0.1.FINAL</version>
     </parent>
 
 	<groupId>ua.mobius.media.client</groupId>
 	<artifactId>jsr-309-driver</artifactId>
-	<version>4.0.1-SNAPSHOT</version>
+	<version>4.0.1.FINAL</version>
 	<name>Mobius JSR-309 Driver</name>
 
 	<properties>
