@@ -278,8 +278,8 @@ public class PlayRecord extends Signal {
         }
     	
         if (player != null) {            
-            player.deactivate();
             player.removeListener(promptHandler);
+            player.deactivate();
             playerListenerAdded=false;
             player=null;
         }
@@ -822,7 +822,10 @@ public class PlayRecord extends Signal {
             if (!options.isNonInterruptable()) {
                 if (isPromptActive) {
                     logger.info(String.format("(%s) Tone '%s' has been detected: prompt phase interrupted", getEndpoint().getLocalName(), s));
+                    isPromptActive = false;
                     terminatePrompt();                    
+                    logger.info(String.format("(%s) Prompt phase terminated, start collect phase", getEndpoint().getLocalName()));
+                    startCollectPhase();
                 } else {
                     logger.info(String.format("(%s) Tone '%s' has been detected: collected", getEndpoint().getLocalName(), s));
                 }
