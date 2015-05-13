@@ -27,7 +27,6 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.locks.ReentrantLock;
 
 /**
  *
@@ -43,13 +42,13 @@ public class FSM implements Runnable, Serializable {
     private HashMap<String, State> states = new HashMap();
     
     protected State state;
-    private ReentrantLock lock = new ReentrantLock();
-    
+
     private HashMap attributes = new HashMap();
     
     //state timer
     protected ScheduledExecutorService scheduler;    
     protected ScheduledFuture timer;
+    protected boolean hasTimeoutTransitions = false;
     
     protected Logger logger;
     
@@ -127,6 +126,7 @@ public class FSM implements Runnable, Serializable {
         Transition t = new Transition("timeout", states.get(to));
         states.get(from).timeout = timeout;
         states.get(from).add(t);
+        hasTimeoutTransitions = true;
         
         return t;
     }
@@ -165,7 +165,6 @@ public class FSM implements Runnable, Serializable {
     }
     
     public void run() {
-        lock.lock();
         synchronized(this) {
             if (state != null && state != start && state != end) {
                 state.tick(System.currentTimeMillis());

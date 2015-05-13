@@ -12,7 +12,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import java.util.concurrent.locks.ReentrantLock;
 import javax.media.mscontrol.MediaErr;
 import javax.media.mscontrol.MsControlException;
 import javax.media.mscontrol.Parameters;
@@ -47,9 +46,6 @@ public abstract class ContainerImpl extends MediaObjectImpl implements JoinableC
     
     //use for implementing synchronous calls
     protected InvocationLock invocationLock = new InvocationLock();
-    
-    protected ReentrantLock lock = new ReentrantLock();
-    protected Direction direction;
     
     public ContainerImpl(MediaSessionImpl session, Parameters parameters) throws MsControlException {
         super(session, session.getDriver(), parameters);
@@ -306,11 +302,6 @@ public abstract class ContainerImpl extends MediaObjectImpl implements JoinableC
                 link.signal("release");
             } catch (UnknownTransitionException e) {
             }
-        }
-        
-        try {
-            Thread.sleep(300);
-        } catch (InterruptedException e) {
         }
     }
     

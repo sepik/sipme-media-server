@@ -66,7 +66,7 @@ public class State implements Runnable {
         }
         
         //if this is end state we have to cancel timer generator
-        if (this == fsm.end) {
+        if (this == fsm.end && fsm.timer != null) {
             fsm.timer.cancel(false);
         }
     }
@@ -80,7 +80,7 @@ public class State implements Runnable {
         
         //leaving start state? process started and we need to start time marks scheduler
         //for timeout measurement
-        if (this == fsm.start) {
+        if (this == fsm.start && fsm.hasTimeoutTransitions) {
             fsm.timer = fsm.scheduler.scheduleAtFixedRate(fsm, 0, 1, TimeUnit.SECONDS);
         }
     }
