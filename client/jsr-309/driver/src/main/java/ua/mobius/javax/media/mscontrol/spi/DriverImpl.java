@@ -21,6 +21,7 @@ import jain.protocol.ip.mgcp.message.parms.RequestIdentifier;
 import jain.protocol.ip.mgcp.message.parms.ReturnCode;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.Map;
 import java.util.Properties;
 
 import java.util.Set;
@@ -185,24 +186,20 @@ public class DriverImpl implements Driver, JainMgcpListener {
      * @param listener the listener to deattach.
      */
     public void deattach(JainMgcpListener listener) {
-        int identifier = -1;
-        
-        //search identifier of the specified listener 
-        Set<Integer> IDs = txListeners.keySet();        
-        for (Integer id : IDs) {
-            if (txListeners.get(id) == listener) {
-                identifier = id;
-                break;
+        Set<Map.Entry<Integer, JainMgcpListener>> txEntrySet = txListeners.entrySet();
+        for (Map.Entry<Integer, JainMgcpListener> txEntry : txEntrySet) {
+            if (txEntry.getValue() == listener) {
+                txEntrySet.remove(txEntry);
             }
         }
-        
-        //remove it from list if found
-        if (identifier != -1) {
-            txListeners.remove(identifier);
+        Set<Map.Entry<String, JainMgcpListener>> reqEntrySet = requestListeners.entrySet();
+        for (Map.Entry<String, JainMgcpListener> reqEntry : reqEntrySet) {
+            if (reqEntry.getValue() == listener) {
+                reqEntrySet.remove(reqEntry);
+            }
         }
     }
-    
-    
+
     public PropertyInfo[] getFactoryPropertyInfo() {
         return null;
     }

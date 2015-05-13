@@ -48,9 +48,9 @@ public class MediaGroupImpl extends ContainerImpl implements MediaGroup {
     
     protected SignalDetectorImpl detector = null;
     protected SignalGenerator generator = null;
-    
-    public RequestIdentifier reqID = null;    
-    
+
+    public RequestIdentifier reqID = null;
+
     private Boolean stopping=false;
     
     public MediaGroupImpl(MediaSessionImpl session, MediaConfigImpl config) throws MsControlException {
@@ -144,6 +144,7 @@ public class MediaGroupImpl extends ContainerImpl implements MediaGroup {
     public void release() {
         //unregister media group as listener
         info("Releasing...");
+        detector.release();
         try {
             unjoin();
         } catch (Exception e) {

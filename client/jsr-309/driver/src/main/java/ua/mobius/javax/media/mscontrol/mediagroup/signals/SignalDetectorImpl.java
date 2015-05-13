@@ -65,7 +65,7 @@ public class SignalDetectorImpl implements SignalDetector, JainMgcpListener {
     private StopHandler stopHandler;
     
     private MgcpSender mgcpSender;
-    
+
     public SignalDetectorImpl(MediaGroupImpl parent, MediaConfigImpl config) {
         this.parent = parent;
         this.config = config;
@@ -246,9 +246,13 @@ public class SignalDetectorImpl implements SignalDetector, JainMgcpListener {
         }
     }
 
+    public void release() {
+        parent.getDriver().deattach(this);
+    }
+
     private void requestPlayCollect(String params,Boolean hasClearDigits) {
         //generate request identifier and transaction ID
-        RequestIdentifier reqID = parent.nextRequestID();        
+        RequestIdentifier reqID = parent.nextRequestID();
         int txID = parent.getMediaSession().getDriver().getNextTxID();
         
         //constructs request
