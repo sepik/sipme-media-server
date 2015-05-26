@@ -27,54 +27,18 @@
  */
 package ua.mobius.protocols.mgcp.stack;
 
-import jain.protocol.ip.mgcp.JainMgcpCommandEvent;
-import jain.protocol.ip.mgcp.JainMgcpEvent;
-import jain.protocol.ip.mgcp.JainMgcpListener;
-import jain.protocol.ip.mgcp.JainMgcpProvider;
-import jain.protocol.ip.mgcp.JainMgcpResponseEvent;
-import jain.protocol.ip.mgcp.JainMgcpStack;
-import jain.protocol.ip.mgcp.message.AuditConnectionResponse;
-import jain.protocol.ip.mgcp.message.AuditEndpointResponse;
-import jain.protocol.ip.mgcp.message.Constants;
-import jain.protocol.ip.mgcp.message.CreateConnection;
-import jain.protocol.ip.mgcp.message.CreateConnectionResponse;
-import jain.protocol.ip.mgcp.message.DeleteConnectionResponse;
-import jain.protocol.ip.mgcp.message.ModifyConnectionResponse;
-import jain.protocol.ip.mgcp.message.NotificationRequestResponse;
-import jain.protocol.ip.mgcp.message.Notify;
-import jain.protocol.ip.mgcp.message.NotifyResponse;
-import jain.protocol.ip.mgcp.message.RestartInProgressResponse;
-import jain.protocol.ip.mgcp.message.parms.CallIdentifier;
-import jain.protocol.ip.mgcp.message.parms.ConnectionIdentifier;
-import jain.protocol.ip.mgcp.message.parms.NotifiedEntity;
-import jain.protocol.ip.mgcp.message.parms.RequestIdentifier;
-import jain.protocol.ip.mgcp.message.parms.ReturnCode;
-
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.Random;
-import java.util.Set;
-import java.util.TooManyListenersException;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicLong;
-
+import jain.protocol.ip.mgcp.*;
+import jain.protocol.ip.mgcp.message.*;
+import jain.protocol.ip.mgcp.message.parms.*;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
-
 import ua.mobius.protocols.mgcp.handlers.TransactionHandler;
+import ua.mobius.protocols.mgcp.parser.commands.*;
 
-import ua.mobius.protocols.mgcp.parser.commands.AuditConnectionHandler;
-import ua.mobius.protocols.mgcp.parser.commands.AuditEndpointHandler;
-import ua.mobius.protocols.mgcp.parser.commands.CreateConnectionHandler;
-import ua.mobius.protocols.mgcp.parser.commands.DeleteConnectionHandler;
-import ua.mobius.protocols.mgcp.parser.commands.EndpointConfigurationHandler;
-import ua.mobius.protocols.mgcp.parser.commands.ModifyConnectionHandler;
-import ua.mobius.protocols.mgcp.parser.commands.NotifyHandler;
-import ua.mobius.protocols.mgcp.parser.commands.NotificationRequestHandler;
-import ua.mobius.protocols.mgcp.parser.commands.RestartInProgressHandler;
-import ua.mobius.protocols.mgcp.parser.commands.RespUnknownHandler;
+import java.util.*;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.atomic.AtomicInteger;
 
-import ua.mobius.media.server.concurrent.ConcurrentCyclicFIFO;
 
 public class JainMgcpStackProviderImpl implements ExtendedJainMgcpProvider {
 
@@ -94,7 +58,7 @@ public class JainMgcpStackProviderImpl implements ExtendedJainMgcpProvider {
 
 	protected NotifiedEntity notifiedEntity = null;
 
-	private ConcurrentCyclicFIFO<EventWrapper> waitingQueue=new ConcurrentCyclicFIFO<EventWrapper>();
+	private LinkedBlockingQueue<EventWrapper> waitingQueue=new LinkedBlockingQueue<EventWrapper>();
 	
 	private DispatcherThread dispatcher;
 	

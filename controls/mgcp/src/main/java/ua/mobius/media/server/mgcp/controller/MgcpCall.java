@@ -34,7 +34,7 @@ public class MgcpCall {
 
     private CallManager callManager;
     protected int id;
-    protected ConcurrentMap<MgcpConnection> connections=new ConcurrentMap();
+    protected ConcurrentMap<MgcpConnection> connections=new ConcurrentMap<MgcpConnection>();
     private Iterator<Integer> keyIterator;
         
     protected MgcpCall(CallManager callManager, int id) {

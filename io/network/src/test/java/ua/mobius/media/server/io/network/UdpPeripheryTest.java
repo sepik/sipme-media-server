@@ -28,6 +28,7 @@
 
 package ua.mobius.media.server.io.network;
 
+import ua.mobius.media.server.scheduler.DefaultScheduler;
 import ua.mobius.media.server.scheduler.Scheduler;
 import java.net.InetSocketAddress;
 import java.io.IOException;
@@ -61,7 +62,7 @@ public class UdpPeripheryTest {
 
     @Before
     public void setUp() throws IOException {
-    	Scheduler scheduler=new Scheduler();
+    	Scheduler scheduler=new DefaultScheduler();
         udpPeriphery = new UdpManager(scheduler);
     }
 

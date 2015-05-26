@@ -30,7 +30,7 @@ package ua.mobius.media.server.component.oob;
 import java.io.IOException;
 
 import ua.mobius.media.server.impl.AbstractOOBSink;
-import ua.mobius.media.server.concurrent.ConcurrentCyclicFIFO;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import ua.mobius.media.server.spi.memory.ByteFrame;
 import ua.mobius.media.server.spi.memory.ByteMemory;
 
@@ -42,7 +42,7 @@ import ua.mobius.media.server.spi.memory.ByteMemory;
 public class OOBInput extends AbstractOOBSink {
     private int inputId;
     private int limit=10;
-    private ConcurrentCyclicFIFO<ByteFrame> buffer = new ConcurrentCyclicFIFO();
+    private ConcurrentLinkedQueue<ByteFrame> buffer = new ConcurrentLinkedQueue<ByteFrame>();
     
     /**
      * Creates new stream

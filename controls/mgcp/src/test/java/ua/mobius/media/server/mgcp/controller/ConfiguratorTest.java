@@ -16,6 +16,7 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 import ua.mobius.media.Component;
 import ua.mobius.media.ComponentType;
+import ua.mobius.media.server.scheduler.DefaultScheduler;
 import ua.mobius.media.server.spi.Connection;
 import ua.mobius.media.server.spi.ConnectionType;
 import ua.mobius.media.server.spi.ConnectionMode;
@@ -56,7 +57,7 @@ public class ConfiguratorTest {
     public void setUp() throws Exception {
     	clock = new DefaultClock();
     	
-    	scheduler = new Scheduler();
+    	scheduler = new DefaultScheduler();
         scheduler.setClock(clock);
         scheduler.start();  
         

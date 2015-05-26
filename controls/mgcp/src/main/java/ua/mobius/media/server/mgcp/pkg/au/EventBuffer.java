@@ -29,7 +29,7 @@ package ua.mobius.media.server.mgcp.pkg.au;
 
 import java.util.Collection;
 import org.apache.log4j.Logger;
-import ua.mobius.media.server.concurrent.ConcurrentCyclicFIFO;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import ua.mobius.media.server.spi.dtmf.DtmfDetectorListener;
 import ua.mobius.media.server.spi.dtmf.DtmfEvent;
 import ua.mobius.media.server.utils.Text;
@@ -52,7 +52,7 @@ public class EventBuffer implements DtmfDetectorListener {
     private BufferListener listener;
     
     private volatile boolean isActive = false;
-    private ConcurrentCyclicFIFO<DtmfEvent> queue = new ConcurrentCyclicFIFO();
+    private ConcurrentLinkedQueue<DtmfEvent> queue = new ConcurrentLinkedQueue<DtmfEvent>();
     
     private Logger logger = Logger.getLogger(EventBuffer.class);
     

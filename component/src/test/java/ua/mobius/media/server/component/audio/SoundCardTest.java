@@ -12,6 +12,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import ua.mobius.media.server.scheduler.Clock;
 import ua.mobius.media.server.scheduler.DefaultClock;
+import ua.mobius.media.server.scheduler.DefaultScheduler;
 import ua.mobius.media.server.scheduler.Scheduler;
 
 /**
@@ -46,7 +47,7 @@ public class SoundCardTest {
     public void setUp() {
         clock = new DefaultClock();
 
-        scheduler = new Scheduler();
+        scheduler = new DefaultScheduler();
         scheduler.setClock(clock);
         scheduler.start();
 

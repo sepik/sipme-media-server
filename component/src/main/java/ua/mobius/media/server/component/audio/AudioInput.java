@@ -30,7 +30,7 @@ package ua.mobius.media.server.component.audio;
 import java.io.IOException;
 
 import ua.mobius.media.server.impl.AbstractAudioSink;
-import ua.mobius.media.server.concurrent.ConcurrentCyclicFIFO;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import ua.mobius.media.server.spi.memory.ShortFrame;
 import ua.mobius.media.server.spi.memory.ShortMemory;
 
@@ -45,7 +45,7 @@ public class AudioInput extends AbstractAudioSink {
     private int currLimit=3;
     private int maxLimit=12;
     
-    private ConcurrentCyclicFIFO<ShortFrame> buffer = new ConcurrentCyclicFIFO();
+    private ConcurrentLinkedQueue<ShortFrame> buffer = new ConcurrentLinkedQueue<ShortFrame>();
     private ShortFrame activeFrame=null;
     private short[] activeData;
     private short[] oldData;

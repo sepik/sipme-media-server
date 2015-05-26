@@ -37,7 +37,7 @@ import ua.mobius.media.server.impl.AbstractOOBSource;
 import ua.mobius.media.OOBSink;
 import ua.mobius.media.server.scheduler.Scheduler;
 import ua.mobius.media.server.scheduler.Task;
-import ua.mobius.media.server.concurrent.ConcurrentCyclicFIFO;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import ua.mobius.media.server.spi.memory.ByteFrame;
 
 import org.apache.log4j.Logger;
@@ -48,7 +48,7 @@ import org.apache.log4j.Logger;
  */
 public class OOBOutput extends AbstractOOBSource {
 	private int outputId;
-    private ConcurrentCyclicFIFO<ByteFrame> buffer = new ConcurrentCyclicFIFO();
+    private ConcurrentLinkedQueue<ByteFrame> buffer = new ConcurrentLinkedQueue<ByteFrame>();
     
     /**
      * Creates new instance with default name.

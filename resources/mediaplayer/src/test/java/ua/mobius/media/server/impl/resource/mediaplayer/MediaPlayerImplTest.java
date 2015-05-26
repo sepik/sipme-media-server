@@ -35,6 +35,7 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 import ua.mobius.media.server.impl.resource.mediaplayer.audio.AudioPlayerImpl;
+import ua.mobius.media.server.scheduler.DefaultScheduler;
 import ua.mobius.media.server.spi.MediaType;
 import ua.mobius.media.server.spi.memory.ShortFrame;
 import ua.mobius.media.server.scheduler.Scheduler;
@@ -63,7 +64,7 @@ public class MediaPlayerImplTest {
 
     @Before
     public void setUp() throws Exception {    	
-    	scheduler = new Scheduler();
+    	scheduler = new DefaultScheduler();
     	scheduler.setClock(new DefaultClock());
         scheduler.start();
         

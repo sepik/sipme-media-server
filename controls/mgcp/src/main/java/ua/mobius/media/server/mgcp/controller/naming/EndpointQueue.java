@@ -24,7 +24,7 @@ package ua.mobius.media.server.mgcp.controller.naming;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import ua.mobius.media.server.spi.EndpointInstaller;
-import ua.mobius.media.server.concurrent.ConcurrentCyclicFIFO;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import ua.mobius.media.server.mgcp.controller.MgcpEndpoint;
 import ua.mobius.media.server.mgcp.controller.MgcpEndpointStateListener;
 import ua.mobius.media.server.utils.Text;
@@ -45,8 +45,8 @@ public class EndpointQueue implements MgcpEndpointStateListener {
     private final static Text ALL = new Text("*");
     
     //queue of endpoints
-    private ArrayList<Holder> completeList=new ArrayList(SIZE);
-    private ConcurrentCyclicFIFO<MgcpEndpoint> queue = new ConcurrentCyclicFIFO();
+    private ArrayList<Holder> completeList=new ArrayList<Holder>(SIZE);
+    private ConcurrentLinkedQueue<MgcpEndpoint> queue = new ConcurrentLinkedQueue<MgcpEndpoint>();
     
     //reference for just found endpoind
     //private Holder holder;

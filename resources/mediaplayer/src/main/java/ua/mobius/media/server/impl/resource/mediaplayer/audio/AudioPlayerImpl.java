@@ -40,6 +40,7 @@ import ua.mobius.media.server.impl.resource.mediaplayer.audio.gsm.GsmTrackImpl;
 import ua.mobius.media.server.impl.resource.mediaplayer.audio.mpeg.AMRTrackImpl;
 import ua.mobius.media.server.impl.resource.mediaplayer.audio.tts.TtsTrackImpl;
 import ua.mobius.media.server.impl.resource.mediaplayer.audio.tts.VoicesCache;
+import ua.mobius.media.server.impl.resource.mediaplayer.audio.vox.VoxTrackImpl;
 import ua.mobius.media.server.impl.resource.mediaplayer.audio.wav.WavTrackImpl;
 import ua.mobius.media.server.impl.resource.mediaplayer.audio.tone.ToneTrackImpl;
 import ua.mobius.media.server.scheduler.Scheduler;
@@ -173,7 +174,9 @@ public class AudioPlayerImpl extends AbstractAudioSource implements Player, TTSE
     	try {
     		//check scheme, if its file, we should try to create dirs
     		if (ext.matches(Extension.WAV)) {       
-    			track = new WavTrackImpl(targetURL);            	
+    			track = new WavTrackImpl(targetURL);
+            } else if (ext.matches(Extension.VOX)) {
+                track = new VoxTrackImpl(targetURL);
     		} else if (ext.matches(Extension.GSM)) {
     			track = new GsmTrackImpl(targetURL);
     		} else if (ext.matches(Extension.TONE)) {

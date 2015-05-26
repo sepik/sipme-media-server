@@ -43,6 +43,7 @@ import ua.mobius.media.server.component.DspFactoryImpl;
 import ua.mobius.media.server.io.network.UdpManager;
 import ua.mobius.media.server.scheduler.Clock;
 import ua.mobius.media.server.scheduler.DefaultClock;
+import ua.mobius.media.server.scheduler.DefaultScheduler;
 import ua.mobius.media.server.scheduler.Scheduler;
 import ua.mobius.media.server.spi.ConnectionState;
 import ua.mobius.media.server.spi.ConnectionType;
@@ -94,7 +95,7 @@ public class BaseConnectionFSM_FR_Test {
         clock = new DefaultClock();
         
         //create single thread scheduler 
-        scheduler = new Scheduler();
+        scheduler = new DefaultScheduler();
         scheduler.setClock(clock);
         scheduler.start();
 

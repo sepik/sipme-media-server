@@ -27,14 +27,14 @@
  */
 package ua.mobius.media.server.component.audio;
 
-import java.util.Iterator;
-
+import ua.mobius.media.server.concurrent.ConcurrentMap;
 import ua.mobius.media.server.scheduler.Scheduler;
 import ua.mobius.media.server.scheduler.Task;
-import ua.mobius.media.server.concurrent.ConcurrentMap;
 import ua.mobius.media.server.spi.format.AudioFormat;
-import ua.mobius.media.server.spi.format.Format;
 import ua.mobius.media.server.spi.format.FormatFactory;
+import ua.mobius.media.server.spi.memory.ShortFrame;
+
+import java.util.Iterator;
 
 /**
  * Implements compound audio mixer , one of core components of mms 3.0
@@ -49,7 +49,7 @@ public class AudioMixer {
     private AudioFormat format = FormatFactory.createAudioFormat("LINEAR", 8000, 16, 1);
     
     //The pool of components
-    private ConcurrentMap<AudioComponent> components = new ConcurrentMap();
+    private ConcurrentMap<AudioComponent> components = new ConcurrentMap<AudioComponent>();
     
     Iterator<AudioComponent> activeComponents;
     
@@ -83,7 +83,7 @@ public class AudioMixer {
     /**
      * Releases unused input stream
      *
-     * @param input the input stream previously created
+     * @param component the input stream previously created
      */
     public void release(AudioComponent component) {
     	components.remove(component.getComponentId());    	
@@ -102,7 +102,7 @@ public class AudioMixer {
     	mixCount = 0;
     	started = true;
     	emptyCount=0;
-    	scheduler.submit(mixer,scheduler.MIXER_MIX_QUEUE);
+    	scheduler.submit(mixer, Scheduler.MIXER_MIX_QUEUE);
     }    
     
     public void stop() {
@@ -126,10 +126,35 @@ public class AudioMixer {
         
         public int getQueueNumber()
         {
-        	return scheduler.MIXER_MIX_QUEUE;
+        	return Scheduler.MIXER_MIX_QUEUE;
         }
         
         public long perform() {
+
+            // optimized for one input - one output
+            activeComponents=components.valuesIterator();
+            AudioComponent component1 = null;
+            AudioComponent component2 = null;
+            if(activeComponents.hasNext()) {
+                component1 = activeComponents.next();
+            }
+            if(activeComponents.hasNext()) {
+                component2 = activeComponents.next();
+            }
+            if (component1 != null && component1.hasOneInput() && component2 != null && component2.hasOneInput() && !activeComponents.hasNext()) {
+                ShortFrame inputFrame1 = component1.poll();
+                if (inputFrame1 != null) {
+                    component2.offer(inputFrame1, 0);
+                }
+                ShortFrame inputFrame2 = component2.poll();
+                if (inputFrame2 != null) {
+                    component1.offer(inputFrame2, 0);
+                }
+                scheduler.submit(this, Scheduler.MIXER_MIX_QUEUE);
+                mixCount++;
+                return 0;
+            }
+
         	//summarize all
         	sourcesCount=0;
         	activeComponents=components.valuesIterator();
@@ -152,7 +177,7 @@ public class AudioMixer {
             
             if(sourcesCount==0)
             {
-            	scheduler.submit(this,scheduler.MIXER_MIX_QUEUE);
+            	scheduler.submit(this, Scheduler.MIXER_MIX_QUEUE);
                 mixCount++;  
                 emptyCount++;
                 return 0;            
@@ -196,7 +221,7 @@ public class AudioMixer {
             		component.offer(total,emptyCount);
             }
             
-            scheduler.submit(this,scheduler.MIXER_MIX_QUEUE);
+            scheduler.submit(this, Scheduler.MIXER_MIX_QUEUE);
             mixCount++;    
             emptyCount=0;
             return 0;            

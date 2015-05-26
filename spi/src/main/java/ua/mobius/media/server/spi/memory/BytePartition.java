@@ -27,7 +27,7 @@
  */
 package ua.mobius.media.server.spi.memory;
 
-import ua.mobius.media.server.concurrent.ConcurrentCyclicFIFO;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
  *
@@ -36,7 +36,7 @@ import ua.mobius.media.server.concurrent.ConcurrentCyclicFIFO;
 public class BytePartition {
 
     protected int size;
-    private ConcurrentCyclicFIFO<ByteFrame> heap = new ConcurrentCyclicFIFO();
+    private ConcurrentLinkedQueue<ByteFrame> heap = new ConcurrentLinkedQueue<ByteFrame>();
 
     protected BytePartition(int size) {
         this.size = size;

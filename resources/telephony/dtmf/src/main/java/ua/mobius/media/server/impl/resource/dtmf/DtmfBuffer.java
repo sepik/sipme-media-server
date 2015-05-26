@@ -29,7 +29,7 @@ package ua.mobius.media.server.impl.resource.dtmf;
 
 import java.io.Serializable;
 import org.apache.log4j.Logger;
-import ua.mobius.media.server.concurrent.ConcurrentCyclicFIFO;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
  * Implements digit buffer.
@@ -43,7 +43,7 @@ public class DtmfBuffer implements Serializable {
     public int interdigitInterval = 160;
     
     //Queue for buffered events
-    private ConcurrentCyclicFIFO<DtmfEventImpl> queue = new ConcurrentCyclicFIFO();
+    private ConcurrentLinkedQueue<DtmfEventImpl> queue = new ConcurrentLinkedQueue<DtmfEventImpl>();
     
     //buffer size
     private int size = 20;

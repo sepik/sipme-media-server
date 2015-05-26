@@ -30,14 +30,14 @@ package ua.mobius.media.server.mgcp.pkg.au;
 import java.util.Collection;
 import ua.mobius.media.server.utils.Text;
 
-import ua.mobius.media.server.concurrent.ConcurrentCyclicFIFO;
+import java.util.concurrent.ConcurrentLinkedQueue;
 /**
  * Represents parameters supplied with command.
  * 
  * @author oifa yulian
  */
 public class Options {
-	public static ConcurrentCyclicFIFO<Options> cache = new ConcurrentCyclicFIFO();
+	public static ConcurrentLinkedQueue<Options> cache = new ConcurrentLinkedQueue<Options>();
     
     private final static Text ann = new Text("an");
     private final static Text du = new Text("du");

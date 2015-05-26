@@ -16,6 +16,7 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 import ua.mobius.media.server.scheduler.Clock;
 import ua.mobius.media.server.scheduler.DefaultClock;
+import ua.mobius.media.server.scheduler.DefaultScheduler;
 import ua.mobius.media.server.scheduler.Scheduler;
 import ua.mobius.media.server.spi.format.AudioFormat;
 import ua.mobius.media.server.spi.format.FormatFactory;
@@ -61,7 +62,7 @@ public class AbstractSourceTest {
     public void setUp() {
         clock = new DefaultClock();
 
-        scheduler = new Scheduler();
+        scheduler = new DefaultScheduler();
         scheduler.setClock(clock);
         scheduler.start();
         

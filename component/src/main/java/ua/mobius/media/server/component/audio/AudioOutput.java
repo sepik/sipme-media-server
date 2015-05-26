@@ -37,7 +37,7 @@ import ua.mobius.media.server.impl.AbstractAudioSource;
 import ua.mobius.media.AudioSink;
 import ua.mobius.media.server.scheduler.Scheduler;
 import ua.mobius.media.server.scheduler.Task;
-import ua.mobius.media.server.concurrent.ConcurrentCyclicFIFO;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import ua.mobius.media.server.spi.memory.ShortFrame;
 
 import org.apache.log4j.Logger;
@@ -48,7 +48,7 @@ import org.apache.log4j.Logger;
  */
 public class AudioOutput extends AbstractAudioSource {
 	private int outputId;
-    private ConcurrentCyclicFIFO<ShortFrame> buffer = new ConcurrentCyclicFIFO();
+    private ConcurrentLinkedQueue<ShortFrame> buffer = new ConcurrentLinkedQueue<ShortFrame>();
     
     /**
      * Creates new instance with default name.

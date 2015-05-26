@@ -46,8 +46,8 @@ public abstract class Task implements Runnable {
     
     private final Object LOCK = new Object();    
         
-    private AtomicBoolean inQueue0=new AtomicBoolean(false);
-    private AtomicBoolean inQueue1=new AtomicBoolean(false);
+    private volatile boolean inQueue0 = false;
+    private volatile boolean inQueue1 = false;
     
     private Logger logger = Logger.getLogger(Task.class);
     
@@ -59,32 +59,32 @@ public abstract class Task implements Runnable {
 
     public void storedInQueue0()
     {
-    	inQueue0.set(true);
+        inQueue0 = true;
     }
     
     public void storedInQueue1()
     {
-    	inQueue1.set(true);
+    	inQueue1 = true;
     }
     
     public void removeFromQueue0()
     {
-    	inQueue0.set(false);
+    	inQueue0 = false;
     }
     
     public void removeFromQueue1()
     {
-    	inQueue1.set(false);
+    	inQueue1 = false;
     }
    
-    public Boolean isInQueue0()
+    public boolean isInQueue0()
     {
-    	return inQueue0.get();
+    	return inQueue0;
     }
     
-    public Boolean isInQueue1()
+    public boolean isInQueue1()
     {
-    	return inQueue1.get();
+    	return inQueue1;
     }
     
     /**

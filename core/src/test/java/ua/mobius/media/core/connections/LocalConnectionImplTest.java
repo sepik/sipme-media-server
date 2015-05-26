@@ -40,6 +40,7 @@ import ua.mobius.media.server.impl.rtp.ChannelsManager;
 import ua.mobius.media.server.io.network.UdpManager;
 import ua.mobius.media.server.scheduler.Clock;
 import ua.mobius.media.server.scheduler.DefaultClock;
+import ua.mobius.media.server.scheduler.DefaultScheduler;
 import ua.mobius.media.server.scheduler.Scheduler;
 import ua.mobius.media.server.spi.ConnectionType;
 import ua.mobius.media.server.spi.ResourceUnavailableException;
@@ -80,7 +81,7 @@ public class LocalConnectionImplTest {
         clock = new DefaultClock();
 
         //create single thread scheduler
-        scheduler = new Scheduler();
+        scheduler = new DefaultScheduler();
         scheduler.setClock(clock);
         scheduler.start();
 

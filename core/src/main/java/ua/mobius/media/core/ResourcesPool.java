@@ -38,7 +38,7 @@ import ua.mobius.media.server.spi.ResourceUnavailableException;
 import ua.mobius.media.server.spi.dsp.DspFactory;
 
 import ua.mobius.media.server.scheduler.Scheduler;
-import ua.mobius.media.server.concurrent.ConcurrentCyclicFIFO;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import ua.mobius.media.server.impl.rtp.ChannelsManager;
 
@@ -65,12 +65,12 @@ public class ResourcesPool implements ComponentFactory {
 	private ChannelsManager channelsManager;
 	private DspFactory dspFactory;
 	
-	private ConcurrentCyclicFIFO<Component> players;
-	private ConcurrentCyclicFIFO<Component> recorders;
-	private ConcurrentCyclicFIFO<Component> dtmfDetectors;
-	private ConcurrentCyclicFIFO<Component> dtmfGenerators;
-	private ConcurrentCyclicFIFO<Component> signalDetectors;
-	private ConcurrentCyclicFIFO<Component> signalGenerators;
+	private ConcurrentLinkedQueue<Component> players;
+	private ConcurrentLinkedQueue<Component> recorders;
+	private ConcurrentLinkedQueue<Component> dtmfDetectors;
+	private ConcurrentLinkedQueue<Component> dtmfGenerators;
+	private ConcurrentLinkedQueue<Component> signalDetectors;
+	private ConcurrentLinkedQueue<Component> signalGenerators;
 	
 	private int defaultPlayers;
 	private int defaultRecorders;
@@ -81,8 +81,8 @@ public class ResourcesPool implements ComponentFactory {
 	
 	private int dtmfDetectorDbi=-35;
 	
-	private ConcurrentCyclicFIFO<Connection> localConnections;
-	private ConcurrentCyclicFIFO<Connection> remoteConnections;
+	private ConcurrentLinkedQueue<Connection> localConnections;
+	private ConcurrentLinkedQueue<Connection> remoteConnections;
 	
 	private int defaultLocalConnections;
 	private int defaultRemoteConnections;
@@ -114,14 +114,14 @@ public class ResourcesPool implements ComponentFactory {
 		this.channelsManager=channelsManager;
 		this.dspFactory=dspFactory;
 		
-		players=new ConcurrentCyclicFIFO();
-		recorders=new ConcurrentCyclicFIFO();
-		dtmfDetectors=new ConcurrentCyclicFIFO();
-		dtmfGenerators=new ConcurrentCyclicFIFO();
-		signalDetectors=new ConcurrentCyclicFIFO();
-		signalGenerators=new ConcurrentCyclicFIFO();
-		localConnections=new ConcurrentCyclicFIFO();
-		remoteConnections=new ConcurrentCyclicFIFO();
+		players=new ConcurrentLinkedQueue<Component>();
+		recorders=new ConcurrentLinkedQueue<Component>();
+		dtmfDetectors=new ConcurrentLinkedQueue<Component>();
+		dtmfGenerators=new ConcurrentLinkedQueue<Component>();
+		signalDetectors=new ConcurrentLinkedQueue<Component>();
+		signalGenerators=new ConcurrentLinkedQueue<Component>();
+		localConnections=new ConcurrentLinkedQueue<Connection>();
+		remoteConnections=new ConcurrentLinkedQueue<Connection>();
 	}
 	
 	public DspFactory getDspFactory()

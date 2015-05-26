@@ -20,6 +20,7 @@ import ua.mobius.media.server.mgcp.MgcpProvider;
 import ua.mobius.media.server.mgcp.message.MgcpRequest;
 import ua.mobius.media.server.mgcp.tx.Action;
 import ua.mobius.media.server.scheduler.DefaultClock;
+import ua.mobius.media.server.scheduler.DefaultScheduler;
 import ua.mobius.media.server.scheduler.Scheduler;
 import ua.mobius.media.server.utils.Text;
 
@@ -53,7 +54,7 @@ public class ActionSelectorTest {
     public void setUp() throws IOException {
         clock = new DefaultClock();
         
-        scheduler = new Scheduler();
+        scheduler = new DefaultScheduler();
         scheduler.setClock(clock);
         scheduler.start();
         

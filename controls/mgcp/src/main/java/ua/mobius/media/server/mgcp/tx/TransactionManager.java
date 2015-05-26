@@ -32,7 +32,7 @@ import ua.mobius.media.server.mgcp.controller.CallManager;
 import ua.mobius.media.server.mgcp.controller.naming.NamingTree;
 import ua.mobius.media.server.scheduler.Task;
 import ua.mobius.media.server.scheduler.Scheduler;
-import ua.mobius.media.server.concurrent.ConcurrentCyclicFIFO;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import ua.mobius.media.server.concurrent.ConcurrentMap;
 
 import java.util.concurrent.atomic.AtomicInteger;
@@ -49,11 +49,11 @@ public class TransactionManager {
     private static java.util.concurrent.atomic.AtomicInteger ID = new AtomicInteger(1);
     
     //pool of transaction objects
-    private  ConcurrentCyclicFIFO<Transaction> pool=new ConcurrentCyclicFIFO();
+    private  ConcurrentLinkedQueue<Transaction> pool=new ConcurrentLinkedQueue<Transaction>();
     
     //cache size in 100ms units    
     private static final int cacheSize=5;
-    private ConcurrentCyclicFIFO<Transaction>[] cache=new ConcurrentCyclicFIFO[cacheSize];
+    private ConcurrentLinkedQueue<Transaction>[] cache=new ConcurrentLinkedQueue[cacheSize];
     private int cleanIndex=0;
     
     //currently active transactions.
@@ -83,14 +83,14 @@ public class TransactionManager {
     public TransactionManager(Scheduler scheduler, int size) {
         this.scheduler = scheduler;
         
-        active = new ConcurrentMap();
+        active = new ConcurrentMap<Transaction>();
         
         for (int i = 0; i < size; i++) {
         	pool.offer(new Transaction(this));            
         }      
         
         for(int i=0;i<cache.length;i++)
-        	cache[i]=new ConcurrentCyclicFIFO<Transaction>();
+        	cache[i]=new ConcurrentLinkedQueue<Transaction>();
         
         cacheHeartbeat = new Heartbeat();        
     }

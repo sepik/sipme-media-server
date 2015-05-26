@@ -27,7 +27,7 @@
  */
 package ua.mobius.media.server.spi.memory;
 
-import ua.mobius.media.server.concurrent.ConcurrentCyclicFIFO;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
  *
@@ -36,7 +36,7 @@ import ua.mobius.media.server.concurrent.ConcurrentCyclicFIFO;
 public class ShortPartition {
 
     protected int size;
-    private ConcurrentCyclicFIFO<ShortFrame> heap = new ConcurrentCyclicFIFO();
+    private ConcurrentLinkedQueue<ShortFrame> heap = new ConcurrentLinkedQueue<ShortFrame>();
 
     protected ShortPartition(int size) {
         this.size = size;

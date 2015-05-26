@@ -25,7 +25,7 @@ import ua.mobius.media.server.mgcp.controller.MgcpEndpoint;
 import ua.mobius.media.server.spi.EndpointInstaller;
 import ua.mobius.media.server.utils.Text;
 
-import ua.mobius.media.server.concurrent.ConcurrentCyclicFIFO;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
  * Naming tree for MGCP endpoints.
@@ -34,8 +34,8 @@ import ua.mobius.media.server.concurrent.ConcurrentCyclicFIFO;
  */
 public class NamingTree {
     //the root of the tree
-    private NamingNode<EndpointQueue> root = new NamingNode(new Text("root"), null);
-    private ConcurrentCyclicFIFO<Text[]> patterns = new ConcurrentCyclicFIFO();
+    private NamingNode<EndpointQueue> root = new NamingNode<EndpointQueue>(new Text("root"), null);
+    private ConcurrentLinkedQueue<Text[]> patterns = new ConcurrentLinkedQueue<Text[]>();
     
     //exceptions
     private static UnknownEndpointException UNKNOWN_ENDPOINT_EXCEPTION;// = new UnknownEndpointException();

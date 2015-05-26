@@ -79,7 +79,7 @@ public abstract class BaseEndpointImpl implements Endpoint {
     //logger instance
     private final Logger logger = Logger.getLogger(BaseEndpointImpl.class);
     
-    private ConcurrentMap<Connection> connections=new ConcurrentMap();
+    private ConcurrentMap<Connection> connections=new ConcurrentMap<Connection>();
     private Iterator<Connection> connectionsIterator;
     
     public BaseEndpointImpl(String localName) {
@@ -184,7 +184,7 @@ public abstract class BaseEndpointImpl implements Endpoint {
     /**
      * (Non Java-doc.)
      * 
-     * @see ua.mobius.media.server.spi.Endpoint#createConnection(ua.mobius.media.server.spi.ConnectionMode);
+     * @see ua.mobius.media.server.spi.Endpoint#createConnection(ConnectionType, Boolean);
      */
     public Connection createConnection(ConnectionType type,Boolean isLocal) throws ResourceUnavailableException {
     	

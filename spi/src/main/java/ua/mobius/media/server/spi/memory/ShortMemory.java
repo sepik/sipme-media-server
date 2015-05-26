@@ -35,7 +35,7 @@ import ua.mobius.media.server.concurrent.ConcurrentMap;
  */
 public class ShortMemory 
 {
-    private static ConcurrentMap<ShortPartition> partitions = new ConcurrentMap();
+    private static ConcurrentMap<ShortPartition> partitions = new ConcurrentMap<ShortPartition>();
     
     public static ShortFrame allocate(int size) 
     {

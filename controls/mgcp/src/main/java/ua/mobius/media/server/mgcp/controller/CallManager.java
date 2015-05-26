@@ -31,7 +31,7 @@ import ua.mobius.media.server.utils.Text;
  */
 public class CallManager {
     //list of active calls
-	private ConcurrentMap<MgcpCall> calls=new ConcurrentMap();
+	private ConcurrentMap<MgcpCall> calls=new ConcurrentMap<MgcpCall>();
     
     public MgcpCall getCall(int id, boolean allowNew) {
     	MgcpCall result=calls.get(id);

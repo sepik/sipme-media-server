@@ -27,27 +27,15 @@
  */
 package ua.mobius.media.core.endpoints;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.concurrent.atomic.AtomicInteger;
-
-import org.apache.log4j.Logger;
-import ua.mobius.media.MediaSink;
-import ua.mobius.media.MediaSource;
 import ua.mobius.media.core.connections.BaseConnection;
 import ua.mobius.media.server.component.audio.AudioSplitter;
 import ua.mobius.media.server.component.oob.OOBSplitter;
-import ua.mobius.media.server.scheduler.Clock;
-import ua.mobius.media.server.scheduler.Scheduler;
 import ua.mobius.media.server.spi.Connection;
-import ua.mobius.media.server.spi.ConnectionType;
 import ua.mobius.media.server.spi.ConnectionMode;
-import ua.mobius.media.server.spi.Endpoint;
-import ua.mobius.media.server.spi.EndpointState;
-import ua.mobius.media.server.spi.MediaType;
+import ua.mobius.media.server.spi.ConnectionType;
 import ua.mobius.media.server.spi.ResourceUnavailableException;
-import ua.mobius.media.server.spi.TooManyConnectionsException;
-import ua.mobius.media.server.spi.dsp.DspFactory;
+
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Basic implementation of the endpoint.
@@ -83,7 +71,7 @@ public class BaseSplitterEndpointImpl extends BaseEndpointImpl {
     /**
      * (Non Java-doc.)
      * 
-     * @see ua.mobius.media.server.spi.Endpoint#createConnection(ua.mobius.media.server.spi.ConnectionMode);
+     * @see ua.mobius.media.server.spi.Endpoint#createConnection(ConnectionType, Boolean);
      */
     public Connection createConnection(ConnectionType type,Boolean isLocal) throws ResourceUnavailableException {
     	Connection connection=super.createConnection(type,isLocal);

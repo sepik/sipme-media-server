@@ -40,6 +40,7 @@ import ua.mobius.media.server.component.audio.Sine;
 import ua.mobius.media.server.component.audio.SpectraAnalyzer;
 import ua.mobius.media.server.scheduler.Clock;
 import ua.mobius.media.server.scheduler.DefaultClock;
+import ua.mobius.media.server.scheduler.DefaultScheduler;
 import ua.mobius.media.server.scheduler.Scheduler;
 
 /**
@@ -79,7 +80,7 @@ public class AudioSplitterTest {
     public void setUp() throws IOException {
     	clock = new DefaultClock();
 
-        scheduler = new Scheduler();
+        scheduler = new DefaultScheduler();
         scheduler.setClock(clock);
         scheduler.start();
 

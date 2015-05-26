@@ -46,6 +46,7 @@ import ua.mobius.media.server.component.audio.SpectraAnalyzer;
 import ua.mobius.media.server.io.network.UdpManager;
 import ua.mobius.media.server.scheduler.Clock;
 import ua.mobius.media.server.scheduler.DefaultClock;
+import ua.mobius.media.server.scheduler.DefaultScheduler;
 import ua.mobius.media.server.scheduler.Scheduler;
 import ua.mobius.media.server.spi.Connection;
 import ua.mobius.media.server.spi.ConnectionMode;
@@ -96,7 +97,7 @@ public class LocalJoiningTest {
         clock = new DefaultClock();
 
         //create single thread scheduler
-        scheduler = new Scheduler();
+        scheduler = new DefaultScheduler();
         scheduler.setClock(clock);
         scheduler.start();
 

@@ -28,6 +28,7 @@
 
 package ua.mobius.media.server.impl.rtp;
 
+import ua.mobius.media.server.scheduler.DefaultScheduler;
 import ua.mobius.media.server.spi.ConnectionMode;
 import ua.mobius.media.server.spi.format.Formats;
 import ua.mobius.media.server.spi.format.AudioFormat;
@@ -84,7 +85,7 @@ public class LocalChannelTest {
         clock = new DefaultClock();
 
         //create single thread scheduler
-        scheduler = new Scheduler();
+        scheduler = new DefaultScheduler();
         scheduler.setClock(clock);
         scheduler.start();
 

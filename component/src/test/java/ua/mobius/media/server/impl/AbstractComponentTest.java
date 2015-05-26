@@ -33,6 +33,8 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
+
+import ua.mobius.media.server.scheduler.DefaultScheduler;
 import ua.mobius.media.server.spi.format.EncodingName;
 import ua.mobius.media.server.spi.format.Format;
 import ua.mobius.media.server.spi.format.FormatFactory;
@@ -72,7 +74,7 @@ public class AbstractComponentTest {
     public void setUp() throws Exception {
     	clock = new DefaultClock();
     	
-    	scheduler = new Scheduler();
+    	scheduler = new DefaultScheduler();
         scheduler.setClock(clock);
         scheduler.start();    
         

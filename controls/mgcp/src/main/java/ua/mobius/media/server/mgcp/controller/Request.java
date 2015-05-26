@@ -31,7 +31,7 @@ import ua.mobius.media.server.mgcp.controller.signal.MgcpPackage;
 import ua.mobius.media.server.mgcp.controller.signal.Signal;
 import ua.mobius.media.server.mgcp.message.MgcpRequest;
 import ua.mobius.media.server.mgcp.message.Parameter;
-import ua.mobius.media.server.concurrent.ConcurrentCyclicFIFO;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import ua.mobius.media.server.spi.Connection;
 import ua.mobius.media.server.spi.Endpoint;
 import ua.mobius.media.server.utils.Text;
@@ -59,7 +59,7 @@ public class Request {
      * The list of signals/events requested.
      * This list is cleared each time before accept new request.
      */ 
-    private ConcurrentCyclicFIFO<Signal> executors = new ConcurrentCyclicFIFO<Signal>();
+    private ConcurrentLinkedQueue<Signal> executors = new ConcurrentLinkedQueue<Signal>();
     
     //notified entity address
     private InetSocketAddress address;

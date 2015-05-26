@@ -20,6 +20,7 @@ import ua.mobius.media.server.component.oob.OOBMixer;
 
 import ua.mobius.media.server.scheduler.Clock;
 import ua.mobius.media.server.scheduler.DefaultClock;
+import ua.mobius.media.server.scheduler.DefaultScheduler;
 import ua.mobius.media.server.scheduler.Scheduler;
 import ua.mobius.media.server.spi.dtmf.DtmfDetectorListener;
 import ua.mobius.media.server.spi.dtmf.DtmfEvent;
@@ -62,7 +63,7 @@ public class DtmfTest implements DtmfDetectorListener {
     public void setUp() throws TooManyListenersException {
     	clock = new DefaultClock();
 
-        scheduler = new Scheduler();
+        scheduler = new DefaultScheduler();
         scheduler.setClock(clock);
         scheduler.start();
         

@@ -43,6 +43,7 @@ import ua.mobius.media.core.endpoints.BaseMixerEndpointImpl;
 import ua.mobius.media.core.endpoints.impl.IvrEndpoint;
 import ua.mobius.media.core.endpoints.impl.BridgeEndpoint;
 import ua.mobius.media.ComponentType;
+import ua.mobius.media.server.scheduler.DefaultScheduler;
 import ua.mobius.media.server.spi.MediaType;
 import ua.mobius.media.server.spi.Connection;
 import ua.mobius.media.server.spi.ConnectionMode;
@@ -101,7 +102,7 @@ public class LocalMediaGroupTest implements DtmfDetectorListener {
         clock = new DefaultClock();
 
         //create single thread scheduler
-        scheduler = new Scheduler();
+        scheduler = new DefaultScheduler();
         scheduler.setClock(clock);
         scheduler.start();
 

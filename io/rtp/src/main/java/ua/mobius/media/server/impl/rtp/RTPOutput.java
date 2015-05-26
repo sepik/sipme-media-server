@@ -40,7 +40,7 @@ import ua.mobius.media.server.component.audio.AudioOutput;
 import ua.mobius.media.server.component.oob.OOBOutput;
 import ua.mobius.media.MediaSink;
 import ua.mobius.media.MediaSource;
-import ua.mobius.media.server.concurrent.ConcurrentCyclicFIFO;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import ua.mobius.media.server.impl.AbstractCompoundSink;
 import ua.mobius.media.server.impl.rtp.sdp.RTPFormat;
 import ua.mobius.media.server.io.network.ProtocolHandler;

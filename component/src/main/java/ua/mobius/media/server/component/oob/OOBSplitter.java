@@ -48,8 +48,8 @@ public class OOBSplitter {
     private Scheduler scheduler;
     
     //The pools of components
-    private ConcurrentMap<OOBComponent> insideComponents = new ConcurrentMap();
-    private ConcurrentMap<OOBComponent> outsideComponents = new ConcurrentMap();
+    private ConcurrentMap<OOBComponent> insideComponents = new ConcurrentMap<OOBComponent>();
+    private ConcurrentMap<OOBComponent> outsideComponents = new ConcurrentMap<OOBComponent>();
         
     private Iterator<OOBComponent> insideRIterator=insideComponents.valuesIterator();
     private Iterator<OOBComponent> insideSIterator=insideComponents.valuesIterator();

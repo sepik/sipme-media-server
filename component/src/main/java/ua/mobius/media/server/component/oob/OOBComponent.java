@@ -27,13 +27,12 @@
  */
 package ua.mobius.media.server.component.oob;
 
-import java.util.Iterator;
 import ua.mobius.media.server.concurrent.ConcurrentMap;
 import ua.mobius.media.server.spi.format.AudioFormat;
-import ua.mobius.media.server.spi.format.Format;
 import ua.mobius.media.server.spi.format.FormatFactory;
 import ua.mobius.media.server.spi.memory.ByteFrame;
-import ua.mobius.media.server.spi.memory.ByteMemory;
+
+import java.util.Iterator;
 
 /**
  * Implements compound components used by mixer and splitter.
@@ -44,8 +43,8 @@ public class OOBComponent {
 	//the format of the output stream.
 	private final static AudioFormat dtmf = FormatFactory.createAudioFormat("telephone-event", 8000);
 
-    private ConcurrentMap<OOBInput> inputs = new ConcurrentMap();
-	private ConcurrentMap<OOBOutput> outputs = new ConcurrentMap();
+    private ConcurrentMap<OOBInput> inputs = new ConcurrentMap<OOBInput>();
+	private ConcurrentMap<OOBOutput> outputs = new ConcurrentMap<OOBOutput>();
     
 	Iterator<OOBInput> activeInputs;
 	Iterator<OOBOutput> activeOutputs;

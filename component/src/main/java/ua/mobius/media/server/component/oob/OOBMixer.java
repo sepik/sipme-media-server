@@ -27,16 +27,12 @@
  */
 package ua.mobius.media.server.component.oob;
 
-import java.util.Iterator;
-
+import ua.mobius.media.server.concurrent.ConcurrentMap;
 import ua.mobius.media.server.scheduler.Scheduler;
 import ua.mobius.media.server.scheduler.Task;
-import ua.mobius.media.server.concurrent.ConcurrentMap;
-import ua.mobius.media.server.spi.format.AudioFormat;
-import ua.mobius.media.server.spi.format.Format;
-import ua.mobius.media.server.spi.format.FormatFactory;
 import ua.mobius.media.server.spi.memory.ByteFrame;
-import ua.mobius.media.server.spi.memory.ByteMemory;
+
+import java.util.Iterator;
 
 /**
  * Implements compound oob mixer , one of core components of mms 3.0
@@ -48,7 +44,7 @@ public class OOBMixer {
     private Scheduler scheduler;
     
     //The pool of components
-    private ConcurrentMap<OOBComponent> components = new ConcurrentMap();
+    private ConcurrentMap<OOBComponent> components = new ConcurrentMap<OOBComponent>();
     
     Iterator<OOBComponent> activeComponents;
     
@@ -76,7 +72,7 @@ public class OOBMixer {
     /**
      * Releases unused input stream
      *
-     * @param input the input stream previously created
+     * @param component the input stream previously created
      */
     public void release(OOBComponent component) {
     	components.remove(component.getComponentId());        
@@ -86,7 +82,7 @@ public class OOBMixer {
     	mixCount = 0;
     	started = true;
     	emptyCount=0;
-    	scheduler.submit(mixer,scheduler.MIXER_MIX_QUEUE);
+    	scheduler.submit(mixer, Scheduler.MIXER_MIX_QUEUE);
     }    
     
     public void stop() {
@@ -105,7 +101,7 @@ public class OOBMixer {
         
         public int getQueueNumber()
         {
-        	return scheduler.MIXER_MIX_QUEUE;
+        	return  Scheduler.MIXER_MIX_QUEUE;
         }
         
         public long perform() {
@@ -125,7 +121,7 @@ public class OOBMixer {
             
             if(current==null)
             {
-            	scheduler.submit(this,scheduler.MIXER_MIX_QUEUE);
+            	scheduler.submit(this, Scheduler.MIXER_MIX_QUEUE);
                 mixCount++; 
                 emptyCount++;
                 return 0;            
@@ -142,7 +138,7 @@ public class OOBMixer {
             }
             
             current.recycle();
-            scheduler.submit(this,scheduler.MIXER_MIX_QUEUE);
+            scheduler.submit(this, Scheduler.MIXER_MIX_QUEUE);
             mixCount++;   
             emptyCount=0;
             return 0;            

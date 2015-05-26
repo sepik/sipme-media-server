@@ -28,14 +28,14 @@
 
 package ua.mobius.protocols.mgcp.utils;
 
-import ua.mobius.media.server.concurrent.ConcurrentCyclicFIFO;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import org.apache.log4j.Logger;
 
 public class PacketRepresentationFactory {
 
 	private static final Logger logger = Logger.getLogger(PacketRepresentationFactory.class);
 
-	private ConcurrentCyclicFIFO<PacketRepresentation> list = new ConcurrentCyclicFIFO<PacketRepresentation>();
+	private ConcurrentLinkedQueue<PacketRepresentation> list = new ConcurrentLinkedQueue<PacketRepresentation>();
 	private int size = 0;
 	private int dataArrSize = 0;
 	private int count = 0;

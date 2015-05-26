@@ -35,7 +35,7 @@ import java.nio.channels.DatagramChannel;
 import java.nio.channels.SelectionKey;
 import java.util.concurrent.atomic.AtomicBoolean;
 import org.apache.log4j.Logger;
-import ua.mobius.media.server.concurrent.ConcurrentCyclicFIFO;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import ua.mobius.media.server.io.network.ProtocolHandler;
 import ua.mobius.media.server.io.network.UdpManager;
 import ua.mobius.media.server.mgcp.message.MgcpMessage;
@@ -70,13 +70,13 @@ public class MgcpProvider {
     private Scheduler scheduler;
     
     //transmission buffer
-    private ConcurrentCyclicFIFO<ByteBuffer> txBuffer = new ConcurrentCyclicFIFO();
+    private ConcurrentLinkedQueue<ByteBuffer> txBuffer = new ConcurrentLinkedQueue<ByteBuffer>();
     
     //receiver buffer
     private ByteBuffer rxBuffer = ByteBuffer.allocate(8192);
     
     //pool of events
-    private ConcurrentCyclicFIFO<MgcpEventImpl> events = new ConcurrentCyclicFIFO();
+    private ConcurrentLinkedQueue<MgcpEventImpl> events = new ConcurrentLinkedQueue<MgcpEventImpl>();
         
     private final static Logger logger = Logger.getLogger(MgcpProvider.class);
     /**

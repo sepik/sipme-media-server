@@ -36,6 +36,8 @@ import ua.mobius.media.server.mgcp.message.MgcpResponse;
 import ua.mobius.media.server.scheduler.DefaultClock;
 import ua.mobius.media.server.scheduler.Clock;
 import java.net.InetSocketAddress;
+
+import ua.mobius.media.server.scheduler.DefaultScheduler;
 import ua.mobius.media.server.spi.listener.TooManyListenersException;
 import ua.mobius.media.server.utils.Text;
 import ua.mobius.media.server.mgcp.message.MgcpRequest;
@@ -64,7 +66,7 @@ public class MgcpProviderLoadTest {
     
     private Server server;
     
-    private ConcurrentMap<Client> clients = new ConcurrentMap();
+    private ConcurrentMap<Client> clients = new ConcurrentMap<Client>();
     private ClientListener demux;
     
     private volatile int errorCount;
@@ -83,7 +85,7 @@ public class MgcpProviderLoadTest {
     
     @Before
     public void setUp() throws IOException, TooManyListenersException {
-    	scheduler = new Scheduler();
+    	scheduler = new DefaultScheduler();
         scheduler.setClock(clock);
         scheduler.start();
         

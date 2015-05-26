@@ -28,6 +28,7 @@
 
 package ua.mobius.media.server.impl.rtp;
 
+import ua.mobius.media.server.scheduler.DefaultScheduler;
 import ua.mobius.media.server.spi.dtmf.DtmfDetectorListener;
 import ua.mobius.media.server.impl.resource.dtmf.DetectorImpl;
 import ua.mobius.media.server.component.oob.OOBComponent;
@@ -97,7 +98,7 @@ public class LocalEventTest implements DtmfDetectorListener {
         clock = new DefaultClock();
 
         //create single thread scheduler
-        scheduler = new Scheduler();
+        scheduler = new DefaultScheduler();
         scheduler.setClock(clock);
         scheduler.start();
 

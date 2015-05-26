@@ -36,7 +36,8 @@ public interface Extension {
     public final static String GSM = "gsm";
     public final static String TXT = "txt";
     public final static String TONE = "tone";
-    
+    public final static String VOX = "vox";
+
     public final static String MP4 = "mp4";
     public final static String THREE_GP = "3gp";
     public final static String MOV = "mov";

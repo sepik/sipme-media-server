@@ -27,9 +27,9 @@
  */
 package ua.mobius.media.server.scheduler;
 
-import java.util.Iterator;
+import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
-import ua.mobius.media.server.concurrent.ConcurrentCyclicFIFO;
 
 /**
  * Implements queue of tasks.
@@ -39,14 +39,14 @@ import ua.mobius.media.server.concurrent.ConcurrentCyclicFIFO;
  */
 public class OrderedTaskQueue {
 	//inner holder for tasks
-    private ConcurrentCyclicFIFO<Task>[] taskList=new ConcurrentCyclicFIFO[2];
+    private ConcurrentLinkedQueue<Task>[] taskList=new ConcurrentLinkedQueue[2];
     
     private Integer activeIndex=0;
     
     public OrderedTaskQueue() {
         //intitalize task list
-    	taskList[0] = new ConcurrentCyclicFIFO<Task>();
-    	taskList[1] = new ConcurrentCyclicFIFO<Task>();    
+    	taskList[0] = new ConcurrentLinkedQueue<Task>();
+    	taskList[1] = new ConcurrentLinkedQueue<Task>();
     }    
 
     /**

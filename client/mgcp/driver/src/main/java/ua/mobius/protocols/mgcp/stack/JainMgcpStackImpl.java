@@ -42,36 +42,25 @@
  */
 package ua.mobius.protocols.mgcp.stack;
 
-import jain.protocol.ip.mgcp.CreateProviderException;
-import jain.protocol.ip.mgcp.DeleteProviderException;
-import jain.protocol.ip.mgcp.JainMgcpProvider;
-import jain.protocol.ip.mgcp.JainMgcpStack;
-import jain.protocol.ip.mgcp.OAM_IF;
+import jain.protocol.ip.mgcp.*;
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
+import ua.mobius.media.server.concurrent.ConcurrentMap;
+import ua.mobius.protocols.mgcp.handlers.MessageHandler;
+import ua.mobius.protocols.mgcp.handlers.TransactionHandler;
+import ua.mobius.protocols.mgcp.utils.PacketRepresentation;
+import ua.mobius.protocols.mgcp.utils.PacketRepresentationFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
-import java.net.SocketAddress;
 import java.net.SocketException;
 import java.nio.ByteBuffer;
 import java.nio.channels.DatagramChannel;
-import java.util.Map;
 import java.util.Properties;
-import java.util.concurrent.atomic.AtomicInteger;
-
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
-
-import ua.mobius.protocols.mgcp.handlers.MessageHandler;
-import ua.mobius.protocols.mgcp.handlers.TransactionHandler;
-
-import ua.mobius.protocols.mgcp.utils.PacketRepresentation;
-import ua.mobius.protocols.mgcp.utils.PacketRepresentationFactory;
-
-import ua.mobius.media.server.concurrent.ConcurrentCyclicFIFO;
-import ua.mobius.media.server.concurrent.ConcurrentMap;
+import java.util.concurrent.LinkedBlockingQueue;
 /**
  * 
  * @author Oleg Kulikov
@@ -122,7 +111,7 @@ public class JainMgcpStackImpl extends Thread implements JainMgcpStack, OAM_IF {
 
 	private ConcurrentMap<TransactionHandler> completedTransactions = new ConcurrentMap<TransactionHandler>();
 
-	private ConcurrentCyclicFIFO<PacketRepresentation> inputQueue=new ConcurrentCyclicFIFO<PacketRepresentation>();	
+	private LinkedBlockingQueue<PacketRepresentation> inputQueue=new LinkedBlockingQueue<PacketRepresentation>();
 	
 	private DatagramSocket socket;
 

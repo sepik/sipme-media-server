@@ -27,11 +27,10 @@
  */
 package ua.mobius.media.server.mgcp.tx;
 
-import ua.mobius.media.server.scheduler.TaskChain;
-import ua.mobius.media.server.scheduler.Task;
+import ua.mobius.media.server.scheduler.*;
+
 import java.util.Random;
-import ua.mobius.media.server.scheduler.Scheduler;
-import ua.mobius.media.server.scheduler.DefaultClock;
+
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -67,7 +66,7 @@ public class TransactionManagerTest {
     public void setUp() {
         clock = new DefaultClock();
         
-        scheduler = new Scheduler();
+        scheduler = new DefaultScheduler();
         scheduler.setClock(clock);
         scheduler.start();
         

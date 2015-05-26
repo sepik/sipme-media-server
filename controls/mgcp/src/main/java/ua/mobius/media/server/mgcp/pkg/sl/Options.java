@@ -32,7 +32,7 @@ import java.util.List;
 
 import ua.mobius.media.server.utils.Text;
 
-import ua.mobius.media.server.concurrent.ConcurrentCyclicFIFO;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import java.util.concurrent.ArrayBlockingQueue;
 /**
@@ -41,7 +41,7 @@ import java.util.concurrent.ArrayBlockingQueue;
  */
 public final class Options 
 {
-		private static final ConcurrentCyclicFIFO<ArrayBlockingQueue<DtmfSignal>> cache=new ConcurrentCyclicFIFO<ArrayBlockingQueue<DtmfSignal>>();
+		private static final ConcurrentLinkedQueue<ArrayBlockingQueue<DtmfSignal>> cache=new ConcurrentLinkedQueue<ArrayBlockingQueue<DtmfSignal>>();
 		
 		public static void recycle(ArrayBlockingQueue<DtmfSignal> queue)
 		{

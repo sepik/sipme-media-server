@@ -14,6 +14,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
+import ua.mobius.media.server.scheduler.DefaultScheduler;
 import ua.mobius.media.server.spi.memory.ShortFrame;
 import ua.mobius.media.server.spi.memory.ByteFrame;
 import ua.mobius.media.server.component.audio.AudioComponent;
@@ -66,7 +67,7 @@ public class DtmfBufferingTest implements DtmfDetectorListener {
     public void setUp() throws TooManyListenersException {
         clock = new DefaultClock();
 
-        scheduler = new Scheduler();
+        scheduler = new DefaultScheduler();
         scheduler.setClock(clock);
         scheduler.start();
         

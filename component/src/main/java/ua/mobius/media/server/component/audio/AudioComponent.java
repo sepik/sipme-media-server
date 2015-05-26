@@ -46,8 +46,8 @@ public class AudioComponent {
     private long period = 20000000L;
     private int packetSize = (int)(period / 1000000) * format.getSampleRate()/1000 * format.getSampleSize() / 8;    
 
-    private ConcurrentMap<AudioInput> inputs = new ConcurrentMap();
-	private ConcurrentMap<AudioOutput> outputs = new ConcurrentMap();
+    private ConcurrentMap<AudioInput> inputs = new ConcurrentMap<AudioInput>();
+	private ConcurrentMap<AudioOutput> outputs = new ConcurrentMap<AudioOutput>();
 	
 	private Iterator<AudioInput> activeInputs;
 	private Iterator<AudioOutput> activeOutputs;
@@ -70,7 +70,6 @@ public class AudioComponent {
      * Creates new instance with default name.
      */
     public AudioComponent(int componentId) {
-    	this.packetSize=packetSize;
     	this.componentId=componentId;
     	data=new int[packetSize/2];
     }
@@ -172,4 +171,40 @@ public class AudioComponent {
         	output.wakeup();
         }
     }
+
+	public void offer(ShortFrame outputFrame,int emptyCount)
+	{
+		if(!this.shouldWrite)
+			return;
+
+		activeOutputs=outputs.valuesIterator();
+		while(activeOutputs.hasNext())
+		{
+			AudioOutput output=activeOutputs.next();
+			outputFrame.setDuration(period*(1+emptyCount));
+
+			if(!activeOutputs.hasNext())
+				output.offer(outputFrame);
+			else
+				output.offer(outputFrame.clone());
+
+			output.wakeup();
+		}
+	}
+
+	public boolean hasOneInput() {
+		return inputs.size() <=1;
+	}
+
+	public ShortFrame poll()
+	{
+		ShortFrame inputFrame = null;
+		Iterator<AudioInput> activeInputs=inputs.valuesIterator();
+		if (activeInputs.hasNext())
+		{
+			AudioInput input=activeInputs.next();
+			inputFrame = input.poll();
+		}
+		return inputFrame;
+	}
 }

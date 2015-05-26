@@ -31,7 +31,7 @@ import ua.mobius.media.server.mgcp.MgcpEvent;
 import ua.mobius.media.server.mgcp.MgcpListener;
 import ua.mobius.media.server.mgcp.MgcpProvider;
 import ua.mobius.media.server.mgcp.controller.signal.MgcpPackage;
-import ua.mobius.media.server.concurrent.ConcurrentCyclicFIFO;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import ua.mobius.media.server.concurrent.ConcurrentMap;
 import ua.mobius.media.server.spi.Connection;
 import ua.mobius.media.server.spi.ConnectionType;
@@ -66,10 +66,10 @@ public class MgcpEndpoint {
     Request request;
     
     //pool of connection activities, limited to 15
-    private ConcurrentCyclicFIFO<MgcpConnection> connections = new ConcurrentCyclicFIFO();
+    private ConcurrentLinkedQueue<MgcpConnection> connections = new ConcurrentLinkedQueue<MgcpConnection>();
     
     //list of active connections
-    private ConcurrentMap<MgcpConnection> activeConnections=new ConcurrentMap();
+    private ConcurrentMap<MgcpConnection> activeConnections=new ConcurrentMap<MgcpConnection>();
     private Iterator<Integer> keyIterator;
     
     protected MgcpProvider mgcpProvider;

@@ -91,7 +91,7 @@ public class PlayerImpl implements Player, JainMgcpListener, Logger {
     private long stopTime;
     private long reqDuration;
     
-    private ConcurrentLinkedQueue<PlayTask> playList = new ConcurrentLinkedQueue();
+    private ConcurrentLinkedQueue<PlayTask> playList = new ConcurrentLinkedQueue<PlayTask>();
     
     private MgcpSender mgcpSender;
     

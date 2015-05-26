@@ -35,7 +35,7 @@ import ua.mobius.media.server.concurrent.ConcurrentMap;
  */
 public class ByteMemory 
 {
-    private static ConcurrentMap<BytePartition> partitions = new ConcurrentMap();
+    private static ConcurrentMap<BytePartition> partitions = new ConcurrentMap<BytePartition>();
     
     public static ByteFrame allocate(int size) 
     {

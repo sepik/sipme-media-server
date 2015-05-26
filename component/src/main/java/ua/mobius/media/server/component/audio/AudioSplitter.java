@@ -35,6 +35,7 @@ import ua.mobius.media.server.concurrent.ConcurrentMap;
 import ua.mobius.media.server.spi.format.AudioFormat;
 import ua.mobius.media.server.spi.format.Format;
 import ua.mobius.media.server.spi.format.FormatFactory;
+import ua.mobius.media.server.spi.memory.ShortFrame;
 
 /**
  * Implements compound audio splitter , one of core components of mms 3.0
@@ -49,8 +50,8 @@ public class AudioSplitter {
     private AudioFormat format = FormatFactory.createAudioFormat("LINEAR", 8000, 16, 1);
     
     //The pools of components
-    private ConcurrentMap<AudioComponent> insideComponents = new ConcurrentMap();
-    private ConcurrentMap<AudioComponent> outsideComponents = new ConcurrentMap();
+    private ConcurrentMap<AudioComponent> insideComponents = new ConcurrentMap<AudioComponent>();
+    private ConcurrentMap<AudioComponent> outsideComponents = new ConcurrentMap<AudioComponent>();
     
     private Iterator<AudioComponent> insideRIterator;
     private Iterator<AudioComponent> insideSIterator;
@@ -125,8 +126,8 @@ public class AudioSplitter {
     	started = true;
     	emptyInsideCount=0;
     	emptyOutsideCount=0;
-    	scheduler.submit(insideMixer,scheduler.MIXER_MIX_QUEUE);
-    	scheduler.submit(outsideMixer,scheduler.MIXER_MIX_QUEUE);
+    	scheduler.submit(insideMixer, Scheduler.MIXER_MIX_QUEUE);
+    	scheduler.submit(outsideMixer, Scheduler.MIXER_MIX_QUEUE);
     }    
     
     public void stop() {
@@ -152,10 +153,34 @@ public class AudioSplitter {
         
         public int getQueueNumber()
         {
-        	return scheduler.MIXER_MIX_QUEUE;
+        	return Scheduler.MIXER_MIX_QUEUE;
         }
         
         public long perform() {
+            Iterator<AudioComponent> insideIterator = insideComponents.valuesIterator();
+            AudioComponent insideComponent = null;
+            if (insideIterator.hasNext()) {
+                insideComponent = insideIterator.next();
+            }
+            if (insideComponent != null && insideComponent.hasOneInput() && !insideIterator.hasNext()) {
+                ShortFrame inputFrame = insideComponent.poll();
+                if (inputFrame != null) {
+                    Iterator<AudioComponent> outsideIterator = outsideComponents.valuesIterator();
+                    while(outsideIterator.hasNext())
+                    {
+                        AudioComponent outsideComponent = outsideIterator.next();
+                        outsideComponent.offer(inputFrame, emptyInsideCount);
+                    }
+                    emptyInsideCount=0;
+                }
+                else {
+                    emptyInsideCount++;
+                }
+                scheduler.submit(this, Scheduler.MIXER_MIX_QUEUE);
+                mixCount++;
+                return 0;
+            }
+
         	//summarize all
             first=true;
             insideRIterator=insideComponents.valuesIterator();
@@ -181,7 +206,7 @@ public class AudioSplitter {
 
             if(first)
             {
-            	scheduler.submit(this,scheduler.MIXER_MIX_QUEUE);
+            	scheduler.submit(this, Scheduler.MIXER_MIX_QUEUE);
                 mixCount++;  
                 emptyInsideCount++;
                 return 0;            
@@ -217,7 +242,7 @@ public class AudioSplitter {
             		
             }
             
-            scheduler.submit(this,scheduler.MIXER_MIX_QUEUE);
+            scheduler.submit(this, Scheduler.MIXER_MIX_QUEUE);
             mixCount++;   
             emptyInsideCount=0;
             return 0;         	
@@ -239,10 +264,35 @@ public class AudioSplitter {
         
         public int getQueueNumber()
         {
-        	return scheduler.MIXER_MIX_QUEUE;
+        	return Scheduler.MIXER_MIX_QUEUE;
         }
         
         public long perform() {
+
+            Iterator<AudioComponent> outsideIterator = outsideComponents.valuesIterator();
+            AudioComponent outsideComponent = null;
+            if (outsideIterator.hasNext()) {
+                outsideComponent = outsideIterator.next();
+            }
+            if (outsideComponent != null && outsideComponent.hasOneInput() && !outsideIterator.hasNext()) {
+                ShortFrame inputFrame = outsideComponent.poll();
+                if (inputFrame != null) {
+                    Iterator<AudioComponent> insideIterator = insideComponents.valuesIterator();
+                    while(insideIterator.hasNext())
+                    {
+                        AudioComponent insideComponent = insideIterator.next();
+                        insideComponent.offer(inputFrame, emptyOutsideCount);
+                    }
+                    emptyOutsideCount=0;
+                }
+                else {
+                    emptyOutsideCount++;
+                }
+                scheduler.submit(this, Scheduler.MIXER_MIX_QUEUE);
+                mixCount++;
+                return 0;
+            }
+
         	//summarize all
             first=true;
             outsideRIterator=outsideComponents.valuesIterator();
@@ -268,7 +318,7 @@ public class AudioSplitter {
 
             if(first)
             {
-            	scheduler.submit(this,scheduler.MIXER_MIX_QUEUE);
+            	scheduler.submit(this, Scheduler.MIXER_MIX_QUEUE);
                 mixCount++;       
                 emptyOutsideCount++;
                 return 0;            
@@ -302,7 +352,7 @@ public class AudioSplitter {
             		
             }
             
-            scheduler.submit(this,scheduler.MIXER_MIX_QUEUE);
+            scheduler.submit(this, Scheduler.MIXER_MIX_QUEUE);
             mixCount++;            
             emptyOutsideCount=0;
             return 0;        	

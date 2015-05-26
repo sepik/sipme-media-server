@@ -7,7 +7,7 @@
     <bean name="SystemClock" class="ua.mobius.media.server.scheduler.DefaultClock"/>
 
     <!-- EDF scheduler -->
-    <bean name="Scheduler" class="ua.mobius.media.server.scheduler.Scheduler">
+    <bean name="Scheduler" class="ua.mobius.media.server.scheduler.DefaultScheduler">
         <property name="clock"><inject bean="SystemClock"/></property>        
     </bean>    
     
